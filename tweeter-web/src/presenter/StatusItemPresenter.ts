@@ -7,7 +7,7 @@ export interface StatusItemView {
 
 export abstract class StatusItemPresenter {
     private _view: StatusItemView;
-    private _hasMoreItems: boolean =true;
+    private _hasMoreItems: boolean = true;
 
     protected constructor(view: StatusItemView) {
         this._view = view;

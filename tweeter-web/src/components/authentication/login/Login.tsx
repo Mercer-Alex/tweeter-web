@@ -24,7 +24,6 @@ const Login = (props: Props) => {
 
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
-
   
   const listener: LoginView = {
     displayErrorMessage: displayErrorMessage,
@@ -38,7 +37,6 @@ const Login = (props: Props) => {
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
-
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
