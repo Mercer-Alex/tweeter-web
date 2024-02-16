@@ -1,9 +1,9 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../authenticationFields/AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
