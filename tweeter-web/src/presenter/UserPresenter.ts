@@ -7,7 +7,7 @@ export interface UserView {
     clearLastInfoMessage: () => void;
     setIsFollowerStatus: (isFollower: boolean) => void;
     setNumbFollowees: (count: number) => void;
-    setNumbfollowers: (count: number) => void;
+    setNumbFollowers: (count: number) => void;
 }
 
 export class UserPresenter {
@@ -51,7 +51,7 @@ export class UserPresenter {
 
       public async setNumbFollowers(authToken: AuthToken, displayedUser: User)  {
         try {
-            this.view.setNumbfollowers(await this.service.getFollowersCount(authToken, displayedUser));
+            this.view.setNumbFollowers(await this.service.getFollowersCount(authToken, displayedUser));
         } catch (error) {
             this.view.displayErrorMessage(
             `Failed to get followers count because of exception: ${error}`
@@ -59,36 +59,56 @@ export class UserPresenter {
         }
       };
 
-     
-      public async follow(
+      public async unfollowDisplayedUser(
         authToken: AuthToken,
-        userToFollow: User
-      ): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the following message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
+        displayedUser: User,
+      ): Promise<void> {
     
-        // TODO: Call the server
+        try {
+          this.view.displayInfoMessage(
+            `Removing ${displayedUser!.name} from followers...`,
+            0
+          );
     
-        let followersCount = await this.service.getFollowersCount(authToken, userToFollow);
-        let followeesCount = await this.service.getFolloweesCount(authToken, userToFollow);
+          let [followersCount, followeesCount] = await this.service.unfollow(
+            authToken!,
+            displayedUser!
+          );
     
-        return [followersCount, followeesCount];
-      };
+          this.view.clearLastInfoMessage();
     
-      
-      public async unfollow(
-        authToken: AuthToken,
-        userToUnfollow: User
-      ): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the unfollowing message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
-    
-        let followersCount = await this.service.getFollowersCount(authToken, userToUnfollow);
-        let followeesCount = await this.service.getFolloweesCount(authToken, userToUnfollow);
-    
-        return [followersCount, followeesCount];
+          this.view.setIsFollowerStatus(false);
+          this.view.setNumbFollowers(followersCount);
+          this.view.setNumbFollowees(followeesCount);
+        } catch (error) {
+            this.view.displayErrorMessage(
+            `Failed to unfollow user because of exception: ${error}`
+          );
+        }
       };
 
+      public async followDisplayedUser(
+        authToken: AuthToken,
+        displayedUser: User,
+      ): Promise<void> {
+    
+        try {
+          this.view.displayInfoMessage(`Adding ${displayedUser!.name} to followers...`, 0);
+    
+          let [followersCount, followeesCount] = await this.service.follow(
+            authToken!,
+            displayedUser!
+          );
+    
+          this.view.clearLastInfoMessage();
+    
+          this.view.setIsFollowerStatus(true);
+          this.view.setNumbFollowers(followersCount);
+          this.view.setNumbFollowees(followeesCount);
+        } catch (error) {
+            this.view.displayErrorMessage(
+            `Failed to follow user because of exception: ${error}`
+          );
+        }
+      };
 }

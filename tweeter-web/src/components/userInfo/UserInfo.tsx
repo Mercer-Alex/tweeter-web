@@ -29,7 +29,7 @@ const UserInfo = (props: Props) => {
     clearLastInfoMessage: clearLastInfoMessage,
     setIsFollowerStatus: (value: boolean) => setIsFollower(value),
     setNumbFollowees: (value: number) => setFolloweesCount(value),
-    setNumbfollowers: (value: number) => setFollowersCount(value),
+    setNumbFollowers: (value: number) => setFollowersCount(value),
   }
 
   const [presenter] = useState(props.presenterGenerator(listener));
@@ -50,14 +50,14 @@ const UserInfo = (props: Props) => {
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    await presenter.follow(authToken!, currentUser!);
+    await presenter.unfollowDisplayedUser(authToken!, currentUser!);
   };
 
   const followDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    await presenter.follow(authToken!, currentUser!)
+    await presenter.followDisplayedUser(authToken!, currentUser!)
   };
 
   return (
