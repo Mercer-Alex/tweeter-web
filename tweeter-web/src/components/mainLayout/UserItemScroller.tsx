@@ -30,15 +30,14 @@ const UserItemScroller = (props: Props) => {
   const listener: UserItemView = {
     addItems: (newItems: User[]) =>
     setItems([...itemsReference.current, ...newItems]),
-    displayErrorMessage: displayErrorMessage
+    displayErrorMessage: displayErrorMessage,
   }
 
   const [presenter] = useState(props.presenterGenerator(listener))
 
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems(authToken!, displayedUser!)
-  
+    presenter.loadMoreItems(authToken!, displayedUser!);
   };
 
   return (

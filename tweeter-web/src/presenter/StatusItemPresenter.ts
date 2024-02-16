@@ -1,17 +1,15 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, Status, User } from "tweeter-shared";
 
-
-export interface UserItemView {
-    addItems: (items: User[]) => void;
+export interface StatusItemView {
+    addItems: (items: Status[]) => void;
     displayErrorMessage: (message: string) => void;
 }
 
-export abstract class UserItemPresenter {
-    private _view: UserItemView;
+export abstract class StatusItemPresenter {
+    private _view: StatusItemView;
     private _hasMoreItems: boolean =true;
 
-
-    protected constructor(view: UserItemView) {
+    protected constructor(view: StatusItemView) {
         this._view = view;
     }
 
