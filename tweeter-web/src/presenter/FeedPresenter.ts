@@ -1,6 +1,6 @@
 import { StatusItemPresenter, StatusItemView } from './StatusItemPresenter.js';
 import { StatusService } from '../model/service/StatusService.js';
-import { AuthToken, Status, User } from 'tweeter-shared';
+import { AuthToken, User } from 'tweeter-shared';
 export const PAGE_SIZE = 10;
 
 export class FeedPresenter extends StatusItemPresenter {
@@ -10,27 +10,27 @@ export class FeedPresenter extends StatusItemPresenter {
         super(view);
         this.service = new StatusService();
     }
-
-    private lastItem: Status | null = null;
+    
+    protected get view(): StatusItemView {
+      return super.view as StatusItemView;
+    }
 
     public async loadMoreItems(authToken: AuthToken, displayedUser: User): Promise<void> {
-        try {
-            if (this.hasMoreItems) {
-              let [newItems, hasMore] = await this.service.loadMoreFeedItems(
-                authToken!,
-                displayedUser!,
-                PAGE_SIZE,
-                this.lastItem
-              );
-      
-              this.hasMoreItems = hasMore;
-              this.lastItem = newItems[newItems.length - 1];
-              this.view.addItems(newItems);
-            }
-          } catch (error) {
-            this.view.displayErrorMessage(
-              `Failed to load feed items because of exception: ${error}`
-            );
-          }
+      this.doFailureRecordingOperation(async () => {
+        if (this.hasMoreItems) {
+          let [newItems, hasMore] = await this.service.loadMoreFeedItems(
+            authToken!,
+            displayedUser!,
+            PAGE_SIZE,
+            this.lastItem
+          );
+  
+          this.hasMoreItems = hasMore;
+          this.lastItem = newItems[newItems.length - 1];
+          this.view.addItems(newItems);
+        }
+      },
+      "load feed items");
+
     }
 }

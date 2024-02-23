@@ -1,35 +1,39 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
-export interface UserNavigationView {
+export interface UserNavigationView extends View {
     setDisplayedUser: (user: User) => void;
     displayErrorMessage: (message: string) => void;
 }
 
-export class UserNavigationPresenter {
+export class UserNavigationPresenter extends Presenter {
     private service: UserService;
-    private view: UserNavigationView;
 
     public constructor(view: UserNavigationView) {
-        this.service = new UserService();
-        this.view = view;
+      super(view);
+      this.service = new UserService();
     } 
+
+    protected get view(): UserNavigationView {
+      return super.view as UserNavigationView;
+    }
+
     public async navigateToUser(currentUser: User, target: string, authToken: AuthToken) {
-        try {
-          let alias = extractAlias(target.toString());
+      this.doFailureRecordingOperation(async () => {
+        let alias = extractAlias(target.toString());
     
-          let user = await this.service.getUser(authToken!, alias);
-    
-          if (!!user) {
-            if (currentUser!.equals(user)) {
-              this.view.setDisplayedUser(currentUser!);
-            } else {
-              this.view.setDisplayedUser(user);
-            }
+        let user = await this.service.getUser(authToken!, alias);
+  
+        if (!!user) {
+          if (currentUser!.equals(user)) {
+            this.view.setDisplayedUser(currentUser!);
+          } else {
+            this.view.setDisplayedUser(user);
           }
-        } catch (error) {
-          this.view.displayErrorMessage(`Failed to get user because of exception: ${error}`);
         }
+      },
+      "get user");
     }
 }
 
