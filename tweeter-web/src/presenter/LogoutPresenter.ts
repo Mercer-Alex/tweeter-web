@@ -1,5 +1,5 @@
 import { AuthToken } from "tweeter-shared";
-import { LoginService } from "../model/service/LoginService";
+import { UserService } from "../model/service/UserService";
 
 export interface LogoutView {
     displayErrorMessage: (message: string) => void;
@@ -10,11 +10,11 @@ export interface LogoutView {
 
 export class LogoutPresenter {
     private view: LogoutView;
-    private service: LoginService;
+    private service: UserService;
 
     public constructor(view: LogoutView) {
         this.view = view;
-        this.service = new LoginService();
+        this.service = new UserService();
     }
 
     public async logOut(authToken: AuthToken) {

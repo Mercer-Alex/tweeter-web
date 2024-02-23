@@ -19,6 +19,8 @@ const Register = (props: Props) => {
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [imageBytes, setImageBytes] = useState<Uint8Array>(new Uint8Array());
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
@@ -27,7 +29,7 @@ const Register = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
-    return !firstName || !lastName || !alias || !password || !presenter.imageUrl;
+    return !firstName || !lastName || !alias || !password || !imageUrl;
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,12 +40,14 @@ const Register = (props: Props) => {
   const listener: RegisterView = {
     displayErrorMessage: displayErrorMessage,
     navigate: useNavigate(),
-    authenticate:  (user: User, authtoken: AuthToken) => updateUserInfo(user, user, authtoken, rememberMeRef.current),
+    authenticate: (user: User, authtoken: AuthToken) => updateUserInfo(user, user, authtoken, rememberMeRef.current),
+    setImageUrl: setImageUrl,
+    setImageBytes: setImageBytes,
   }
 
   const [presenter] = useState(props.presenterGenerator(listener))
   const doRegister = async () => {
-    presenter.doRegister(firstName, lastName, alias, password, presenter.imageBytes);
+    presenter.doRegister(firstName, lastName, alias, password, imageBytes);
   };
 
   const inputFieldGenerator = () => {
@@ -80,7 +84,7 @@ const Register = (props: Props) => {
             onChange={handleFileChange}
           />
           <label htmlFor="imageFileInput">User Image</label>
-          <img src={presenter.imageUrl} className="img-thumbnail" alt=""></img>
+          <img src={imageUrl} className="img-thumbnail" alt=""></img>
         </div>
       </>
     );

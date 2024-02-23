@@ -1,19 +1,20 @@
 import { AuthToken, User } from "tweeter-shared";
-import { LoginService } from "../model/service/LoginService";
 import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
-import { useState } from "react";
+import { UserService } from "../model/service/UserService";
 
 
 export interface RegisterView {
     displayErrorMessage: (message: string) => void;
     navigate: NavigateFunction;
     authenticate: (user: User, authtoken: AuthToken) => void;
+    setImageUrl(url: string): void;
+    setImageBytes(bytes: Uint8Array): void;
 }
 
 export class RegisterPresenter {
     private view: RegisterView;
-    private service: LoginService;
+    private service: UserService;
 
     private _imageUrl: string = "";
     private _imageBytes: Uint8Array = new Uint8Array();
@@ -21,7 +22,7 @@ export class RegisterPresenter {
 
     public constructor(view: RegisterView) {
         this.view = view;
-        this.service = new LoginService();
+        this.service = new UserService();
     }
 
     public async doRegister(firstName: string, lastName: string, alias: string, password: string, imageBytes: Uint8Array ) {
@@ -46,7 +47,7 @@ export class RegisterPresenter {
       public handleImageFile(file: File | undefined) {
         
         if (file) {
-          this.imageUrl = URL.createObjectURL(file);
+          this.view.setImageUrl(URL.createObjectURL(file));
     
           const reader = new FileReader();
           reader.onload = (event: ProgressEvent<FileReader>) => {
@@ -61,30 +62,14 @@ export class RegisterPresenter {
               "base64"
             );
     
-            this.imageBytes = bytes;
+            this.view.setImageBytes(bytes);
           };
           reader.readAsDataURL(file);
         } else {
-         this.imageUrl = "";
-         this.imageBytes = new Uint8Array();
+         this.view.setImageUrl("");
+         this.view.setImageBytes(new Uint8Array());
         }
       };
-
-    public get imageBytes() {
-        return this._imageBytes;
-    }
-
-    protected set imageBytes(value: Uint8Array) {
-        this._imageBytes = value;
-    }
-
-    public get imageUrl() {
-        return this._imageUrl;
-    }
-
-    protected set imageUrl(value: string) {
-        this._imageUrl = value;
-    }
 }
 
 

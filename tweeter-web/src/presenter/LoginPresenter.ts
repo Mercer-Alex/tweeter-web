@@ -1,6 +1,6 @@
 import { User, AuthToken } from "tweeter-shared";
-import { LoginService } from "../model/service/LoginService";
 import { NavigateFunction, To, useNavigate } from "react-router-dom";
+import { UserService } from "../model/service/UserService";
 
 export interface LoginView {
     displayErrorMessage: (message: string) => void;
@@ -11,11 +11,11 @@ export interface LoginView {
 
 export class LoginPresenter {
     private view: LoginView;
-    private service: LoginService;
+    private service: UserService;
 
     public constructor(view: LoginView) {
         this.view = view;
-        this.service = new LoginService();
+        this.service = new UserService();
     }
 
     public navigate = useNavigate();

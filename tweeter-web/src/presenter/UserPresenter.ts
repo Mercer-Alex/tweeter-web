@@ -1,5 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { FollowService } from "../model/service/FollowService";
 
 export interface UserView {
     displayErrorMessage: (message: string) => void;
@@ -12,11 +12,11 @@ export interface UserView {
 
 export class UserPresenter {
     private view: UserView;
-    private service: UserService;
+    private service: FollowService;
 
     public constructor(view: UserView) {
         this.view = view;
-        this.service = new UserService();
+        this.service = new FollowService();
     }
 
     public async setIsFollowerStatus(
