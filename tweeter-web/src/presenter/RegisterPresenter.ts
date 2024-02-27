@@ -21,7 +21,13 @@ export class RegisterPresenter extends AuthPresenter {
     return "register user";
   }
 
-  protected doAuthentication(alias: string, password: string, firstName?: string, lastName?: string, imageBytes?: Uint8Array): Promise<[User, AuthToken]> {
+  protected doAuthentication(
+    alias: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+    imageBytes?: Uint8Array
+  ): Promise<[User, AuthToken]> {
     return this.service.register(
       firstName!,
       lastName!,
@@ -57,5 +63,3 @@ export class RegisterPresenter extends AuthPresenter {
     }
   };
 }
-
-
