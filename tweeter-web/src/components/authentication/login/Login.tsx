@@ -7,11 +7,12 @@ import { AuthToken, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../authenticationFields/AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
+import { LoginPresenter } from "../../../presenter/LoginPresenter";
+import { AuthView } from "../../../presenter/AuthPresenter";
 
 interface Props {
   originalUrl?: string;
-  presenterGenerator: (view: LoginView) => LoginPresenter;
+  presenterGenerator: (view: AuthView) => LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -24,16 +25,11 @@ const Login = (props: Props) => {
 
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
-  
-  const listener: LoginView = {
+
+  const listener: AuthView = {
     displayErrorMessage: displayErrorMessage,
-    navigate: function (): NavigateFunction {
-      return useNavigate();
-    },
+    navigate: useNavigate(),
     authenticate: (user: User, authtoken: AuthToken) => updateUserInfo(user, user, authtoken, rememberMeRef.current),
-    doLogin: function (): void {
-      presenter.doLogin(alias, password, props.originalUrl!)
-    }
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
@@ -41,7 +37,6 @@ const Login = (props: Props) => {
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
   };
-
 
   const inputFieldGenerator = () => {
     return (
@@ -66,7 +61,7 @@ const Login = (props: Props) => {
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
       submitButtonDisabled={checkSubmitButtonStatus}
-      submit={() => presenter.doLogin(alias, password, props.originalUrl!)}
+      submit={() => presenter.authenticateUser(alias, password, props.originalUrl!)}
     />
   );
 };

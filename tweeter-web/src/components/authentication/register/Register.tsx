@@ -47,7 +47,7 @@ const Register = (props: Props) => {
 
   const [presenter] = useState(props.presenterGenerator(listener))
   const doRegister = async () => {
-    presenter.doRegister(firstName, lastName, alias, password, imageBytes);
+    presenter.authenticateUser(alias, password, "/", firstName, lastName, imageBytes);
   };
 
   const inputFieldGenerator = () => {
@@ -75,7 +75,7 @@ const Register = (props: Props) => {
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
-        <AuthenticationFields setAlias={setAlias} setPassword={setPassword} isBottomField={false}/>
+        <AuthenticationFields setAlias={setAlias} setPassword={setPassword} isBottomField={false} />
         <div className="form-floating mb-3">
           <input
             type="file"

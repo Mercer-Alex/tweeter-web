@@ -19,8 +19,9 @@ import { FollowersPresenter } from "./presenter/FollowersPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
 import { StatusItemView } from "./presenter/StatusItemPresenter";
 import { StoryPresenter } from "./presenter/StoryPresenter";
-import { LoginView, LoginPresenter } from "./presenter/LoginPresenter";
+import { LoginPresenter } from "./presenter/LoginPresenter";
 import { RegisterView, RegisterPresenter } from "./presenter/RegisterPresenter";
+import { AuthView } from "./presenter/AuthPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();;
@@ -50,15 +51,15 @@ const AuthenticatedRoutes = () => {
       <Route element={<MainLayout />}>
         <Route index element={<Navigate to="/feed" />} />
         <Route path="feed"
-               element={<StatusItemScroller
-                 presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)} />} />
+          element={<StatusItemScroller
+            presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)} />} />
         <Route path="story"
-               element={
-                <StatusItemScroller
-                  presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
-                   />
-                  }
-                />
+          element={
+            <StatusItemScroller
+              presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
+            />
+          }
+        />
         <Route
           path="following"
           element={
@@ -71,7 +72,7 @@ const AuthenticatedRoutes = () => {
           path="followers"
           element={
             <UserItemScroller
-            presenterGenerator={(view: UserItemView) => new FollowersPresenter(view)}
+              presenterGenerator={(view: UserItemView) => new FollowersPresenter(view)}
             />
           }
         />
@@ -87,9 +88,9 @@ const UnauthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login presenterGenerator={(view: LoginView) => new LoginPresenter(view)} />} />
+      <Route path="/login" element={<Login presenterGenerator={(view: AuthView) => new LoginPresenter(view)} />} />
       <Route path="/register" element={<Register presenterGenerator={(view: RegisterView) => new RegisterPresenter(view)} />} />
-      <Route path="*" element={<Login originalUrl={location.pathname} presenterGenerator={(view: LoginView) => new LoginPresenter(view)} />} />
+      <Route path="*" element={<Login originalUrl={location.pathname} presenterGenerator={(view: AuthView) => new LoginPresenter(view)} />} />
     </Routes>
   );
 };
