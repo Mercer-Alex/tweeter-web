@@ -1,7 +1,7 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useRef, useState } from "react";
-import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";

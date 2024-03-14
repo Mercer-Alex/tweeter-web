@@ -2,8 +2,7 @@ export interface View {
   displayErrorMessage: (message: string) => void;
 }
 
-export interface MessageView {
-  displayErrorMessage: (message: string) => void;
+export interface MessageView extends View {
   displayInfoMessage: (message: string, duration: number, bootstrapClasses?: string | undefined) => void;
   clearLastInfoMessage: () => void;
 }
@@ -19,7 +18,7 @@ export class Presenter {
     return this._view;
   }
 
-  protected async doFailureRecordingOperation(operation: () => Promise<void>, operationDescription: string) {
+  protected async doFailureRecordingOperation(operation: () => Promise<void>, operationDescription: string): Promise<void> {
     try {
       await operation()
     } catch (error) {
