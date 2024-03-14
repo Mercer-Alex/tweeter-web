@@ -15,7 +15,7 @@ export class LoginPresenter extends AuthPresenter {
     return "log user in";
   }
 
-  protected doAuthentication(alias: string, password: string): Promise<[User, AuthToken]> {
+  public async doAuthentication(alias: string, password: string): Promise<[User, AuthToken]> {
     return this.service.login(alias, password);
   }
 }
