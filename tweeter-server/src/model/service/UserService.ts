@@ -29,11 +29,11 @@ export class UserService {
 		lastName: string,
 		alias: string,
 		password: string,
-		image: Uint8Array
+		userImageBytes: Uint8Array
 	): Promise<[User, AuthToken]> {
 		// Not neded now, but will be needed when you make the request to the server in milestone 3
 		let imageStringBase64: string =
-			Buffer.from(image).toString("base64");
+			Buffer.from(userImageBytes).toString("base64");
 
 		// TODO: Replace with the result of calling the server
 		let user = FakeData.instance.firstUser;

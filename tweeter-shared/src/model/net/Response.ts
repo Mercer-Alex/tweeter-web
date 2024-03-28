@@ -18,6 +18,18 @@ export class TweeterResponse {
 	get message() {
 		return this._message;
 	}
+
+	static fromJson(json: JSON): TweeterResponse {
+		interface TweeterResponseJson extends ResponseJson { }
+
+		const jsonObject: TweeterResponseJson =
+			json as unknown as TweeterResponseJson;
+
+		return new TweeterResponse(
+			jsonObject._success,
+			jsonObject._message
+		);
+	}
 }
 
 interface ResponseJson {
