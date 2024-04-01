@@ -9,7 +9,7 @@ export const handler = async (event: LoadMoreFeedItemsRequest): Promise<LoadMore
 		response = new LoadMoreItemsResponse(
 			true,
 			...(await new StatusService().loadMoreFeedItems(
-				event.authToken,
+				event.authToken!,
 				event.user,
 				event.pageSize,
 				event.lastItem

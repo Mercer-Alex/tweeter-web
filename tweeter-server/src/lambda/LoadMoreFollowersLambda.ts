@@ -8,7 +8,7 @@ export const handler = async (event: LoadMoreFollowersRequest): Promise<LoadMore
 		response = new LoadMoreFollowsResponse(
 			true,
 			...(await new FollowService().loadMoreFollowers(
-				event.authToken,
+				event.authToken!,
 				event.user,
 				event.pageSize,
 				event.lastItem

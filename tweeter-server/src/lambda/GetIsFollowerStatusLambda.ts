@@ -6,7 +6,7 @@ export const handler = async (event: GetIsFollowerStatusRequest): Promise<GetIsF
 	let response: GetIsFollowerStatusResponse;
 
 	try {
-		const isFollower = await new FollowService().getIsFollowerStatus(event.authToken, event.user, event.selectedUser)
+		const isFollower = await new FollowService().getIsFollowerStatus(event.authToken!, event.user, event.selectedUser)
 
 		response = new GetIsFollowerStatusResponse(isFollower, true)
 	} catch (error) {

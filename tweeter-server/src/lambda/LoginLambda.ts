@@ -1,5 +1,5 @@
-import { LoginRequest, AuthenticateResponse } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { AuthenticateResponse, LoginRequest } from "tweeter-shared";
 
 export const handler = async (event: LoginRequest): Promise<AuthenticateResponse> => {
 	let response: AuthenticateResponse;

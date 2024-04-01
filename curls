@@ -1,0 +1,5 @@
+curl -X POST -d `{"username":"@bog","password":"bob"}` https://24hemn1gv4.execute-api.us-east-1.amazonaws.com/dev/service/login
+
+https://24hemn1gv4.execute-api.us-east-1.amazonaws.com/dev/service/login
+
+curl -X POST -d `{"username":"@bog","password":"bob"}` https://24hemn1gv4.execute-api.us-east-1.amazonaws.com/dev/get/followeescount

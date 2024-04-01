@@ -6,7 +6,7 @@ export const handler = async (event: GetUserRequest): Promise<GetUserResponse> =
 	let response: GetUserResponse;
 
 	try {
-		const user = await new UserService().getUser(event.authToken, event.username);
+		const user = await new UserService().getUser(event.authToken!, event.username);
 
 		if (!user) {
 			response = new GetUserResponse(
