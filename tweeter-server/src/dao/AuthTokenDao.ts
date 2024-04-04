@@ -9,7 +9,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export default class AuthTokenDao implements AuthTokenDaoInterface {
-	readonly tableName = "authtokens";
+	readonly tableName = "authToken";
 	readonly auth_tokenAttr = "auth_token";
 	readonly time_stampAttr = "time_stamp";
 	readonly usernameAttr = "username";

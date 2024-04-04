@@ -8,13 +8,13 @@ export class DaoFactory implements DaoFactoryInterface {
 	getAuthTokenDao(): AuthTokenDao {
 		return new AuthTokenDao();
 	}
-	getUserDAO(): UserDao {
+	getUserDao(): UserDao {
 		return new UserDao();
 	}
-	getFollowDAO(): FollowDao {
+	getFollowDao(): FollowDao {
 		return new FollowDao();
 	}
-	getAuthenticationDAO(): AuthDao {
+	getAuthDao(): AuthDao {
 		return new AuthDao();
 	}
 }

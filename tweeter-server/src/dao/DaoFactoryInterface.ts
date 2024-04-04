@@ -4,8 +4,8 @@ import FollowDao from "./FollowDao";
 import UserDao from "./UserDao";
 
 export interface DaoFactoryInterface {
-	getUserDAO(): UserDao;
-	getFollowDAO(): FollowDao;
-	getAuthenticationDAO(): AuthDao;
+	getUserDao(): UserDao;
+	getFollowDao(): FollowDao;
+	getAuthDao(): AuthDao;
 	getAuthTokenDao(): AuthTokenDao;
 }
