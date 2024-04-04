@@ -15,18 +15,14 @@ export class ClientCommunicator {
 			}),
 			body: JSON.stringify(req),
 		};
-		// console.log('before try');
-		// console.log(request);
+
 		try {
-			// console.log('awaiting');
-			// console.log(url);
 			const resp: Response = await fetch(url, request);
-			// console.log('in try');
-			// console.log(url)
+
 			if (resp.ok) {
 				const response: JSON = await resp.json();
-				console.log('inside ok');
-				console.log(response);
+
+
 				return response;
 			} else {
 				const error = await resp.json();

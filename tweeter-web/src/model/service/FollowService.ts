@@ -38,8 +38,7 @@ export class FollowService {
   ): Promise<boolean> {
 
     const response = await this.serverFacade.getIsFollowerStatus(new GetIsFollowerStatusRequest(authToken, user, selectedUser));
-    console.log('follower..............')
-    console.log(response);
+
     return response._isFollower;
   };
 
