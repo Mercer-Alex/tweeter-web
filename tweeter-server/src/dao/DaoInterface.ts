@@ -1,4 +1,4 @@
-import { Follow, User } from "tweeter-shared";
+import { AuthToken, Follow, User } from "tweeter-shared";
 
 export interface AuthDaoInterface {
 	putAuthentication(username: string, password: string): Promise<void>;
@@ -6,19 +6,25 @@ export interface AuthDaoInterface {
 }
 
 export interface FollowDaoInterface {
-	getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]>;
-	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]>;
+	getPageOfFollowers(followerHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]>;
+	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[string[], boolean]>;
 	putFollow(follow: Follow): Promise<void>;
 	getFollow(follow: Follow): Promise<boolean>;
 	deleteFollow(follow: Follow): Promise<void>;
 }
 
 export interface UserDaoInterface {
-	updateFollowersCount(alias: string, value: number): Promise<void>;
-	updateFolloweesCount(alias: string, value: number): Promise<void>;
-	getFollowersCount(alias: string): Promise<number>;
-	getFolloweesCount(alias: string): Promise<number>;
-	getUser(alias: string): Promise<User | undefined>;
+	updateFollowersCount(username: string, value: number): Promise<void>;
+	updateFolloweesCount(username: string, value: number): Promise<void>;
+	getFollowersCount(username: string): Promise<number>;
+	getFolloweesCount(username: string): Promise<number>;
+	getUser(username: string): Promise<User | undefined>;
 	putUser(user: User): Promise<boolean>;
-	deleteUser(alias: string): Promise<void>;
+	deleteUser(username: string): Promise<void>;
+}
+
+export interface AuthTokenDaoInterface {
+	putAuthToken(token: AuthToken, username: string): Promise<void>;
+	deleteAuthToken(token: AuthToken): Promise<void>;
+	checkAuthToken(token: AuthToken): Promise<[AuthToken, string] | [undefined, undefined]>;
 }

@@ -6,7 +6,6 @@ import {
 	GetCommand,
 	PutCommand,
 	QueryCommand,
-	UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
@@ -21,36 +20,101 @@ export default class FollowDao implements FollowDaoInterface {
 	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 
-	getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]> {
-		throw new Error("Method not implemented.");
+	async getPageOfFollowees(followerHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[string[], boolean]> {
+		const params = {
+			KeyConditionExpression: this.followee_handleAttr + " = :followee_handle",
+			ExpressionAttributeValues: {
+				":follower_handle": followerHandle,
+			},
+			TableName: this.tableName,
+			IndexName: this.indexName,
+			Limit: pageSize,
+			ExclusiveStartKey:
+				lastFolloweeHandle === undefined
+					? undefined
+					: {
+						[this.follower_handleAttr]: followerHandle,
+						[this.followee_handleAttr]: lastFolloweeHandle,
+					},
+		};
+
+		const items: string[] = [];
+		const data = await this.client.send(new QueryCommand(params));
+		const hasMorePages = data.LastEvaluatedKey !== undefined;
+
+		data.Items?.forEach((item) =>
+			items.push(item[this.followee_handleAttr])
+		);
+
+		return [items, hasMorePages]
 	}
-	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]> {
-		throw new Error("Method not implemented.");
+	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFolloweHandle: string | undefined): Promise<[string[], boolean]> {
+		const params = {
+			KeyConditionExpression: this.follower_handleAttr + " = :follower_handle",
+			ExpressionAttributeValues: {
+				":follower_handle": followeeHandle,
+			},
+			TableName: this.tableName,
+			IndexName: this.indexName,
+			Limit: pageSize,
+			ExclusiveStartKey:
+				lastFolloweHandle === undefined
+					? undefined
+					: {
+						[this.followee_handleAttr]: lastFolloweHandle,
+						[this.follower_handleAttr]: followeeHandle,
+					},
+		};
+
+		const items: string[] = [];
+		console.log(params);
+		const data = await this.client.send(new QueryCommand(params));
+		const hasMorePages = data.LastEvaluatedKey !== undefined;
+		data.Items?.forEach((item) =>
+			items.push(item[this.follower_handleAttr])
+		);
+
+		return [items, hasMorePages];
 	}
-	putFollow(follow: Follow): Promise<void> {
-		throw new Error("Method not implemented.");
+
+	async putFollow(follows: Follow): Promise<void> {
+		const params = {
+			TableName: this.tableName,
+			Item: {
+				[this.follower_handleAttr]: follows.follower.alias,
+				[this.follower_nameAttr]: follows.follower.name,
+				[this.followee_nameAttr]: follows.followee.name,
+				[this.followee_handleAttr]: follows.followee.name,
+			},
+		};
+		await this.client.send(new PutCommand(params));
 	}
-	getFollow(follows: Follow): Promise<boolean> {
+
+	public async updateFollow(follow: Follow): Promise<void> {
+		this.putFollow(follow);
+	}
+
+	async getFollow(follows: Follow): Promise<boolean> {
 		const params = {
 			TableName: this.tableName,
 			Key: {
-				[this.followee_handleAttr]: follows.followee_handle,
-				[this.follower_handleAttr]: follows.follower_handle,
+				[this.followee_handleAttr]: follows.followee.alias,
+				[this.follower_handleAttr]: follows.follower.alias,
 			},
 		};
 		const output = await this.client.send(new GetCommand(params));
 
-		return output.Item == undefined
-			? undefined
-			: new Follows(
-				output.Item[this.follower_handleAttr],
-				output.Item[this.follower_nameAttr],
-				output.Item[this.followee_nameAttr],
-				output.Item[this.followee_handleAttr],
-			);
-	}
-	deleteFollow(follow: Follow): Promise<void> {
-		throw new Error("Method not implemented.");
+		return output.Item == undefined ? false : true;
 	}
 
+	async deleteFollow(follows: Follow): Promise<void> {
+		const params = {
+			TableName: this.tableName,
+			Key: {
+				[this.followee_handleAttr]: follows.followee.alias,
+				[this.follower_handleAttr]: follows.follower.alias,
+			},
+		};
+		await this.client.send(new DeleteCommand(params));
+	}
 }
