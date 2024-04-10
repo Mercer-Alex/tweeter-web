@@ -1,7 +1,7 @@
-import { Follow, User } from "tweeter-shared";
 import FollowDao from "./dao/FollowDao";
 import { DaoFactory } from "./dao/DaoFactory";
 import { UserService } from "./model/service/UserService";
+import { User, Follow } from "tweeter-shared";
 
 
 console.log('running main');
@@ -14,7 +14,7 @@ class Main {
 		console.log('async run');
 		const followDao: FollowDao = daoFactory.getFollowDao();
 
-		const follower = new User("Alex", "Mercer", "@alex", "/Users/alexmercer/Desktop/yeti.jpeg");
+		const follower = new User("Alex", "Mercer", "@alex", "/Users/alexmercer/cs340Winter/tweeter-web/yeti.jpeg");
 
 
 		// for (let i = 0; i < 25; i++) {
@@ -42,9 +42,9 @@ class Main {
 		// console.log(page2.values);
 
 		const userDao = daoFactory.getUserDao()
-		// await userDao.putUser(follower, 'password');
+		await userDao.putUser(follower, 'password');
 		const getUser = await userDao.getUser("@alex");
-		// console.log(getUser);
+		console.log(getUser);
 
 
 		// for (let i = 0; i < 25; i++) {

@@ -26,7 +26,7 @@ export class RegisterPresenter extends AuthPresenter {
     password: string,
     firstName?: string,
     lastName?: string,
-    imageBytes?: Uint8Array
+    imageBytes?: Uint8Array,
   ): Promise<[User, AuthToken]> {
     return this.service.register(
       firstName!,

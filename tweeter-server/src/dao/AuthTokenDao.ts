@@ -1,4 +1,3 @@
-import { AuthToken } from "tweeter-shared";
 import { AuthTokenDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
@@ -7,6 +6,7 @@ import {
 	PutCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { AuthToken } from "tweeter-shared";
 
 export default class AuthTokenDao implements AuthTokenDaoInterface {
 	readonly tableName = "authToken";

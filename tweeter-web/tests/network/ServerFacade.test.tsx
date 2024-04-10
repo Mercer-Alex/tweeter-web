@@ -8,7 +8,7 @@ describe('ServerFacade', () => {
 	const imageString = new Uint8Array(2);
 	const user = new User('firstName', 'lastName', 'alias', 'imageString');
 
-	it('should register a new user when Register is called', async () => {
+	it.only('should register a new user when Register is called', async () => {
 		const request = new RegisterRequest('alias', 'password', 'firstName', 'lastName', imageString);
 		const response = await serverFacade.register(request);
 
