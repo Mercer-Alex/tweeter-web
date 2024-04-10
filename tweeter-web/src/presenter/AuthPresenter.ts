@@ -32,7 +32,7 @@ export abstract class AuthPresenter extends Presenter {
 		navigateUrl: string,
 		firstName?: string,
 		lastName?: string,
-		imageBytes?: Uint8Array) {
+		imageBytes?: string) {
 		this.doFailureRecordingOperation(async () => {
 			let [user, authToken] = await this.doAuthentication(alias, password, firstName!, lastName!, imageBytes!);
 
@@ -49,6 +49,6 @@ export abstract class AuthPresenter extends Presenter {
 		password: string,
 		firstName?: string,
 		lastName?: string,
-		imageBytes?: Uint8Array
+		imageBytes?: string
 	): Promise<[User, AuthToken]>;
 }

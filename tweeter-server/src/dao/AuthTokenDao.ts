@@ -28,6 +28,7 @@ export default class AuthTokenDao implements AuthTokenDaoInterface {
 		};
 
 		await this.client.send(new PutCommand(params));
+
 	}
 
 	async deleteAuthToken(token: AuthToken): Promise<void> {

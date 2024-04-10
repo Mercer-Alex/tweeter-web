@@ -1,4 +1,3 @@
-import { User } from "tweeter-shared";
 import { UserDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
@@ -8,6 +7,8 @@ import {
 	UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import * as CryptoJS from 'crypto-js';
+import { User } from "tweeter-shared";
 
 export default class UserDao implements UserDaoInterface {
 	readonly tableName = "users";
@@ -17,6 +18,8 @@ export default class UserDao implements UserDaoInterface {
 	readonly image_urlAttr = "image_url";
 	readonly followersAttr = "followers";
 	readonly followeesAttr = "followees";
+	readonly passwordAttr = "password";
+
 
 	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
@@ -77,23 +80,28 @@ export default class UserDao implements UserDaoInterface {
 		};
 
 		const output = await this.client.send(new GetCommand(params));
+
 		return output.Item == undefined
 			? undefined
 			: new User(
 				output.Item.first_name,
 				output.Item.last_name,
-				output.Item.alias,
+				output.Item.username,
 				output.Item.image_url
 			);
 	}
 
-	async putUser(user: User): Promise<boolean> {
+	async putUser(user: User, password: string): Promise<boolean> {
 		if ((await this.getUser(user.alias)) !== undefined) {
 			return false;
 		}
 
+		let hash = CryptoJS.SHA256(password);
+		let hashString = hash.toString(CryptoJS.enc.Hex);
+
 		const params = {
 			TableName: this.tableName,
+			ConditionExpression: 'attribute_not_exists(username)',
 			Item: {
 				[this.usernameAttr]: user.alias,
 				[this.first_nameAttr]: user.firstName,
@@ -101,6 +109,7 @@ export default class UserDao implements UserDaoInterface {
 				[this.image_urlAttr]: user.imageUrl,
 				[this.followersAttr]: 0,
 				[this.followeesAttr]: 0,
+				[this.passwordAttr]: hashString,
 			},
 		};
 		await this.client.send(new PutCommand(params));

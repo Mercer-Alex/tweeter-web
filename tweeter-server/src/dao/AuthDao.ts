@@ -6,6 +6,8 @@ import {
 	PutCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import * as CryptoJS from 'crypto-js';
+
 
 export default class AuthDao implements AuthDaoInterface {
 	readonly tableName = "auth";
@@ -14,12 +16,15 @@ export default class AuthDao implements AuthDaoInterface {
 
 	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
+
 	async putAuthentication(username: string, password: string): Promise<void> {
+		let hash = CryptoJS.SHA256(password);
+		let hashString = hash.toString(CryptoJS.enc.Hex);
 		const params = {
 			TableName: this.tableName,
 			Item: {
 				[this.usernameAttr]: username,
-				[this.passwordAttr]: password,
+				[this.passwordAttr]: hashString,
 			},
 		};
 
@@ -41,13 +46,14 @@ export default class AuthDao implements AuthDaoInterface {
 			Key: { [this.usernameAttr]: username },
 		};
 		const output = await this.client.send(new GetCommand(params));
-
 		if (output === undefined) {
 			return false;
 		}
 
-		console.log(output.Item!.password);
-		if (password === output.Item!.password) {
+		let hash = CryptoJS.SHA256(password);
+		let hashString = hash.toString(CryptoJS.enc.Hex);
+
+		if (output.Item!.password) {
 			return true;
 		} else {
 			return false;

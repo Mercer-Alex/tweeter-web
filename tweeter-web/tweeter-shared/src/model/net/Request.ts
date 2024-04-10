@@ -31,14 +31,14 @@ export class LogoutRequest extends TweeterRequest {
 export class RegisterRequest extends LoginRequest {
 	public firstName: string;
 	public lastName: string;
-	public image: Uint8Array;
+	public image: string;
 
 	constructor(
 		username: string,
 		password: string,
 		firstName: string,
 		lastName: string,
-		image: Uint8Array
+		image: string;
 	) {
 		super(username, password);
 		this.firstName = firstName;

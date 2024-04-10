@@ -8,8 +8,8 @@ export const handler = async (event: LoadMoreStoryItemsRequest): Promise<LoadMor
 	try {
 		response = new LoadMoreItemsResponse(
 			true,
-			...(await new StatusService().loadMoreStoryItems(
-				event.authToken!,
+			...(await new StatusService().loadMoreStatusItems(
+				event.authToken,
 				event.user,
 				event.pageSize,
 				event.lastItem

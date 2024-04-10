@@ -13,17 +13,24 @@ export class TweeterRequest {
 
 	static fromJson(json: JSON): TweeterRequest {
 		interface TweeterRequestJson {
-			_username: string;
-			_authToken: AuthToken;
+			username: string;
+			authToken: AuthToken;
 		}
 
 		const jsonObject: TweeterRequestJson =
 			json as unknown as TweeterRequestJson;
 
 		return new TweeterRequest(
-			jsonObject._username,
-			jsonObject._authToken
+			jsonObject.username,
+			jsonObject.authToken
 		);
+	}
+
+	get username(): string {
+		return this._username;
+	}
+	get authToken(): AuthToken {
+		return this._authToken!;
 	}
 }
 
@@ -37,7 +44,7 @@ export class LoginRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): LoginRequest {
 		interface LoginRequestJson {
-			_username: string;
+			username: string;
 			password: string;
 		}
 
@@ -45,7 +52,7 @@ export class LoginRequest extends TweeterRequest {
 			json as unknown as LoginRequestJson;
 
 		return new LoginRequest(
-			jsonObject._username,
+			jsonObject.username,
 			jsonObject.password,
 		);
 	}
@@ -59,14 +66,14 @@ export class LogoutRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): LogoutRequest {
 		interface LogoutRequestJson {
-			_authToken: AuthToken;
+			authToken: AuthToken;
 		}
 
 		const jsonObject: LogoutRequestJson =
 			json as unknown as LogoutRequestJson;
 
 		return new LogoutRequest(
-			jsonObject._authToken!,
+			jsonObject.authToken!,
 		);
 	}
 }
@@ -91,7 +98,7 @@ export class RegisterRequest extends LoginRequest {
 
 	static fromJson(json: JSON): RegisterRequest {
 		interface RegisterRequestJson {
-			_username: string,
+			username: string,
 			password: string,
 			firstName: string,
 			lastName: string,
@@ -102,7 +109,7 @@ export class RegisterRequest extends LoginRequest {
 			json as unknown as RegisterRequestJson;
 
 		return new RegisterRequest(
-			jsonObject._username,
+			jsonObject.username,
 			jsonObject.password,
 			jsonObject.firstName,
 			jsonObject.lastName,
@@ -119,16 +126,16 @@ export class GetUserRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): GetUserRequest {
 		interface GetUserRequestJson {
-			_authToken: AuthToken;
-			_username: string;
+			authToken: AuthToken;
+			username: string;
 		}
 
 		const jsonObject: GetUserRequestJson =
 			json as unknown as GetUserRequestJson;
 
 		return new GetUserRequest(
-			jsonObject._authToken!,
-			jsonObject._username,
+			jsonObject.authToken!,
+			jsonObject.username,
 		);
 	}
 }
@@ -151,7 +158,7 @@ export class LoadMoreFeedItemsRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): LoadMoreFeedItemsRequest {
 		interface LoadMoreFeedItemsRequestJson {
-			_authToken: AuthToken,
+			authToken: AuthToken,
 			user: User,
 			pageSize: number,
 			lastItem: Status | null
@@ -161,7 +168,7 @@ export class LoadMoreFeedItemsRequest extends TweeterRequest {
 			json as unknown as LoadMoreFeedItemsRequestJson;
 
 		return new LoadMoreFeedItemsRequest(
-			jsonObject._authToken!,
+			jsonObject.authToken!,
 			jsonObject.user,
 			jsonObject.pageSize,
 			jsonObject.lastItem,
@@ -187,7 +194,7 @@ export class LoadMoreStoryItemsRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): LoadMoreStoryItemsRequest {
 		interface LoadMoreStoryItemsRequestJson {
-			_authToken: AuthToken,
+			authToken: AuthToken,
 			user: User,
 			pageSize: number,
 			lastItem: Status | null
@@ -197,7 +204,7 @@ export class LoadMoreStoryItemsRequest extends TweeterRequest {
 			json as unknown as LoadMoreStoryItemsRequestJson;
 
 		return new LoadMoreStoryItemsRequest(
-			jsonObject._authToken!,
+			jsonObject.authToken!,
 			jsonObject.user,
 			jsonObject.pageSize,
 			jsonObject.lastItem,
@@ -215,7 +222,7 @@ export class PostStatusRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): PostStatusRequest {
 		interface PostStatusRequestJson {
-			_authToken: AuthToken;
+			authToken: AuthToken;
 			newStatus: Status;
 		}
 
@@ -223,7 +230,7 @@ export class PostStatusRequest extends TweeterRequest {
 			json as unknown as PostStatusRequestJson;
 
 		return new PostStatusRequest(
-			jsonObject._authToken!,
+			jsonObject.authToken!,
 			jsonObject.newStatus,
 		);
 	}
@@ -247,7 +254,7 @@ export class LoadMoreFollowersRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): LoadMoreFollowersRequest {
 		interface LoadMoreFollowersRequestJson {
-			_authToken: AuthToken,
+			authToken: AuthToken,
 			user: User,
 			pageSize: number,
 			lastItem: User | null
@@ -257,7 +264,7 @@ export class LoadMoreFollowersRequest extends TweeterRequest {
 			json as unknown as LoadMoreFollowersRequestJson;
 
 		return new LoadMoreFollowersRequest(
-			jsonObject._authToken!,
+			jsonObject.authToken!,
 			jsonObject.user,
 			jsonObject.pageSize,
 			jsonObject.lastItem,
@@ -339,7 +346,7 @@ export class GetFolloweesCountRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): GetFolloweesCountRequest {
 		interface GetFolloweesCountRequestJson {
-			_authToken: AuthToken;
+			authToken: AuthToken;
 			user: User;
 		}
 
@@ -347,7 +354,7 @@ export class GetFolloweesCountRequest extends TweeterRequest {
 			json as unknown as GetFolloweesCountRequestJson;
 
 		return new GetFolloweesCountRequest(
-			jsonObject._authToken,
+			jsonObject.authToken,
 			jsonObject.user,
 		);
 	}
@@ -363,7 +370,7 @@ export class GetFollowersCountRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): GetFollowersCountRequest {
 		interface GetFollowersCountRequestRequestJson {
-			_authToken: AuthToken;
+			authToken: AuthToken;
 			user: User;
 		}
 
@@ -371,7 +378,7 @@ export class GetFollowersCountRequest extends TweeterRequest {
 			json as unknown as GetFollowersCountRequestRequestJson;
 
 		return new GetFollowersCountRequest(
-			jsonObject._authToken,
+			jsonObject.authToken,
 			jsonObject.user,
 		);
 	}
@@ -411,7 +418,7 @@ export class UnfollowRequest extends TweeterRequest {
 
 	static fromJson(json: JSON): UnfollowRequest {
 		interface UnfollowRequestRequestJson {
-			_authToken: AuthToken;
+			authToken: AuthToken;
 			user: User;
 		}
 
@@ -419,7 +426,7 @@ export class UnfollowRequest extends TweeterRequest {
 			json as unknown as UnfollowRequestRequestJson;
 
 		return new UnfollowRequest(
-			jsonObject._authToken,
+			jsonObject.authToken,
 			jsonObject.user,
 		);
 	}

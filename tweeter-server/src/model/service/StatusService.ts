@@ -1,7 +1,8 @@
 import { AuthToken, User, Status, FakeData } from "tweeter-shared";
+import { DaoService } from "./DaoService";
 
-export class StatusService {
-	public async loadMoreFeedItems(
+export class StatusService extends DaoService {
+	public async loadMoreStatusItems(
 		authToken: AuthToken,
 		user: User,
 		pageSize: number,
@@ -11,15 +12,6 @@ export class StatusService {
 		return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
 	};
 
-	public async loadMoreStoryItems(
-		authToken: AuthToken,
-		user: User,
-		pageSize: number,
-		lastItem: Status | null
-	): Promise<[Status[], boolean]> {
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-	};
 
 	public async postStatus(
 		authToken: AuthToken,

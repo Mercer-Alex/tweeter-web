@@ -26,3 +26,4 @@ yarn-error.log*
 dist/*
 *.zip
 *.js
+tweeter-server/dist/model/service/UserService.js

@@ -52,7 +52,7 @@ export default class FollowDao implements FollowDaoInterface {
 		const params = {
 			KeyConditionExpression: this.follower_handleAttr + " = :follower_handle",
 			ExpressionAttributeValues: {
-				":follower_handle": followeeHandle,
+				":followee_handle": followeeHandle,
 			},
 			TableName: this.tableName,
 			IndexName: this.indexName,
@@ -84,7 +84,7 @@ export default class FollowDao implements FollowDaoInterface {
 				[this.follower_handleAttr]: follows.follower.alias,
 				[this.follower_nameAttr]: follows.follower.name,
 				[this.followee_nameAttr]: follows.followee.name,
-				[this.followee_handleAttr]: follows.followee.name,
+				[this.followee_handleAttr]: follows.followee.alias,
 			},
 		};
 		await this.client.send(new PutCommand(params));

@@ -124,7 +124,7 @@ export class GetUserResponse extends TweeterResponse {
 
 		if (deserializedUser === null) {
 			throw new Error(
-				"AuthenticateResponse, could not deserialize user with json:\n" +
+				"GetUserResponse, could not deserialize user with json:\n" +
 				JSON.stringify(jsonObject._user)
 			);
 		}

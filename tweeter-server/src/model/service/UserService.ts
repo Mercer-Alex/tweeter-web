@@ -1,27 +1,38 @@
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
+import { DaoService } from "./DaoService";
 
-export class UserService {
+export class UserService extends DaoService {
 
 	public async getUser(
 		authToken: AuthToken,
 		alias: string
-	): Promise<User | null> {
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.findUserByAlias(alias);
+	): Promise<User | undefined> {
+		const getUser: User | undefined = await this.userDao.getUser(alias);
+
+		return getUser;
 	};
 
 	public async login(
-		alias: string,
+		username: string,
 		password: string
 	): Promise<[User, AuthToken]> {
-		// TODO: Replace with the result of calling the server
-		let user = FakeData.instance.firstUser;
 
-		if (user === null) {
-			throw new Error("Invalid alias or password");
+		const authenticate = await this.authDao.authenticate(username, password)
+
+		console.log(authenticate);
+
+		if (authenticate) {
+			const user: User | undefined = await this.userDao.getUser(username);
+			if (user === undefined) {
+				throw new Error("User is undefined, invalid username");
+			}
+			const authToken = AuthToken.Generate();
+			await this.authTokenDao.putAuthToken(authToken, username);
+
+			return [user!, authToken];
 		}
 
-		return [user, FakeData.instance.authToken];
+		throw new Error("Could not authenticate");
 	};
 
 	public async register(
@@ -29,20 +40,24 @@ export class UserService {
 		lastName: string,
 		alias: string,
 		password: string,
-		userImageBytes: Uint8Array
+		userImageBytes: string
 	): Promise<[User, AuthToken]> {
-		// Not neded now, but will be needed when you make the request to the server in milestone 3
+
 		let imageStringBase64: string =
 			Buffer.from(userImageBytes).toString("base64");
+		const imageUrl = await this.s3Dao.putImage(alias, imageStringBase64);
 
-		// TODO: Replace with the result of calling the server
-		let user = FakeData.instance.firstUser;
+		const authToken = AuthToken.Generate();
+		await this.authTokenDao.putAuthToken(authToken, alias);
+
+		const user = new User(firstName, lastName, alias, imageUrl);
+		await this.userDao.putUser(user, password);
 
 		if (user === null) {
 			throw new Error("Invalid registration");
 		}
 
-		return [user, FakeData.instance.authToken];
+		return [user, authToken];
 	};
 
 	public async logout(authToken: AuthToken): Promise<void> {

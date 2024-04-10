@@ -2,6 +2,7 @@ import AuthDao from "./AuthDao";
 import AuthTokenDao from "./AuthTokenDao";
 import { DaoFactoryInterface } from "./DaoFactoryInterface";
 import FollowDao from "./FollowDao";
+import S3Dao from "./S3Dao";
 import UserDao from "./UserDao";
 
 export class DaoFactory implements DaoFactoryInterface {
@@ -16,5 +17,8 @@ export class DaoFactory implements DaoFactoryInterface {
 	}
 	getAuthDao(): AuthDao {
 		return new AuthDao();
+	}
+	getS3Dao(): S3Dao {
+		return new S3Dao();
 	}
 }

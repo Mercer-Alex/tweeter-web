@@ -8,7 +8,7 @@ export const handler = async (event: LoadMoreFeedItemsRequest): Promise<LoadMore
 	try {
 		response = new LoadMoreItemsResponse(
 			true,
-			...(await new StatusService().loadMoreFeedItems(
+			...(await new StatusService().loadMoreStatusItems(
 				event.authToken!,
 				event.user,
 				event.pageSize,

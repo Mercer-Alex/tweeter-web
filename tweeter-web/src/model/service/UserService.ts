@@ -44,7 +44,7 @@ export class UserService {
     let imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
-    const response = await this.serverFacade.register(new RegisterRequest(username, password, firstName, lastName, userImageBytes));
+    const response = await this.serverFacade.register(new RegisterRequest(username, password, firstName, lastName, imageStringBase64));
 
     if (response.user === null) {
       throw new Error("Invalid registration");
