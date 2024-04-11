@@ -9,6 +9,7 @@ export class StatusService extends DaoService {
 		lastItem: Status | null,
 		story: boolean
 	): Promise<[Status[], boolean]> {
+		//TODO: check that authtoken is valid
 		if (story) {
 			let followers: [Status[], boolean] = await this.storyDao.getPageofStatuses(user.alias, pageSize, lastItem);
 			return [followers[0], followers[1]];
@@ -20,24 +21,11 @@ export class StatusService extends DaoService {
 	};
 
 
-	public async postStatus(postRequest: PostStatusRequest): Promise<void> {
-		// Pause so we can see the logging out message. Remove when connected to the server
-		await new Promise((f) => setTimeout(f, 2000));
+	public async postStatus(newStatus: Status): Promise<void> {
+		// await new Promise((f) => setTimeout(f, 2000));
 
-		await this.storyDao.putStatus(
-			new Status(
-				postRequest.newStatus.post,
-				postRequest.newStatus.user,
-				postRequest.newStatus.timestamp
-			),
-			postRequest.newStatus.user.alias);
+		await this.storyDao.putStatus(newStatus);
 
-		await this.feedDao.putStatus(
-			new Status(
-				postRequest.newStatus.post,
-				postRequest.newStatus.user,
-				postRequest.newStatus.timestamp),
-			postRequest.newStatus.user.alias);
-
+		await this.feedDao.putStatus(newStatus);
 	};
 }

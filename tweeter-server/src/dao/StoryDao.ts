@@ -24,6 +24,7 @@ export default class StoryDao extends BaseDao implements StatusDaoInterface {
 			},
 			Limit: pageSize,
 		}
+
 		const items: Status[] = [];
 		const data = await this.client.send(new QueryCommand(params));
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
@@ -50,16 +51,16 @@ export default class StoryDao extends BaseDao implements StatusDaoInterface {
 			: Status.fromJson(output.Item[this.postAttr])!;
 	}
 
-	async putStatus(status: Status, username: string): Promise<void> {
+	async putStatus(status: Status): Promise<void> {
+		let time = new Date(status._timestamp).toDateString();
 		const params = {
 			TableName: this.tableName,
 			Item: {
-				[this.postAttr]: status.toJson,
-				[this.time_stampAttr]: status.timestamp.toString(),
-				[this.author_handleAttr]: username,
+				[this.postAttr]: status._post,
+				[this.time_stampAttr]: time,
+				[this.author_handleAttr]: status._user._alias,
 			},
 		};
-		console.log(params);
 		await this.client.send(new PutCommand(params));
 	}
 }
