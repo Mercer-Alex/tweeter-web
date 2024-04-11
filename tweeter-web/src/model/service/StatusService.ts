@@ -1,4 +1,4 @@
-import { AuthToken, User, Status, LoadMoreFeedItemsRequest, LoadMoreStoryItemsRequest, PostStatusRequest } from "tweeter-shared";
+import { AuthToken, User, Status, LoadMoreStatusItemsRequest, PostStatusRequest } from "tweeter-shared";
 import { ServerFacade } from "../net/ServerFacade";
 
 
@@ -16,7 +16,7 @@ export class StatusService {
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
 
-    const response = await this.serverFacade.loadMoreFeedItems(new LoadMoreFeedItemsRequest(authToken, user, pageSize, lastItem));
+    const response = await this.serverFacade.loadMoreFeedItems(new LoadMoreStatusItemsRequest(authToken, user, pageSize, lastItem));
     return [response.itemsList, response.hasMoreItems];
   };
 
@@ -26,7 +26,7 @@ export class StatusService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    const response = await this.serverFacade.loadMoreStoryItems(new LoadMoreStoryItemsRequest(authToken, user, pageSize, lastItem));
+    const response = await this.serverFacade.loadMoreStoryItems(new LoadMoreStatusItemsRequest(authToken, user, pageSize, lastItem));
     return [response.itemsList, response.hasMoreItems];
   };
 

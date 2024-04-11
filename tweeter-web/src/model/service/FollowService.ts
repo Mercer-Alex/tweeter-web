@@ -1,4 +1,4 @@
-import { AuthToken, User, LoadMoreFollowersRequest, LoadMoreFolloweesRequest, GetIsFollowerStatusRequest, GetFolloweesCountRequest, GetFollowersCountRequest, FollowRequest, UnfollowRequest } from "tweeter-shared";
+import { AuthToken, User, LoadMoreFollowsRequest, GetIsFollowerStatusRequest, GetFolloweesCountRequest, GetFollowersCountRequest, FollowRequest, UnfollowRequest } from "tweeter-shared";
 import { ServerFacade } from "../net/ServerFacade";
 
 export class FollowService {
@@ -14,7 +14,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    const response = await this.serverFacade.loadMoreFollowers(new LoadMoreFollowersRequest(authToken, user, pageSize, lastItem))
+    const response = await this.serverFacade.loadMoreFollowers(new LoadMoreFollowsRequest(authToken, user, pageSize, lastItem))
 
     return [response.itemsList, response.hasMoreItems,]
   };
@@ -26,7 +26,7 @@ export class FollowService {
     lastItem: User | null
   ): Promise<[User[], boolean]> {
 
-    const response = await this.serverFacade.loadMoreFollowees(new LoadMoreFolloweesRequest(authToken, user, pageSize, lastItem));
+    const response = await this.serverFacade.loadMoreFollowees(new LoadMoreFollowsRequest(authToken, user, pageSize, lastItem));
 
     return [response.itemsList, response.hasMoreItems,]
   };

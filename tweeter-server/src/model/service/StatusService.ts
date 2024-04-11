@@ -1,4 +1,4 @@
-import { AuthToken, User, Status, FakeData } from "tweeter-shared";
+import { AuthToken, User, Status, PostStatusRequest } from "tweeter-shared";
 import { DaoService } from "./DaoService";
 
 export class StatusService extends DaoService {
@@ -6,20 +6,38 @@ export class StatusService extends DaoService {
 		authToken: AuthToken,
 		user: User,
 		pageSize: number,
-		lastItem: Status | null
+		lastItem: Status | null,
+		story: boolean
 	): Promise<[Status[], boolean]> {
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+		if (story) {
+			let followers: [Status[], boolean] = await this.storyDao.getPageofStatuses(user.alias, pageSize, lastItem);
+			return [followers[0], followers[1]];
+		}
+		else {
+			let followers: [Status[], boolean] = await this.feedDao.getPageofStatuses(user.alias, pageSize, lastItem);
+			return [followers[0], followers[1]];
+		}
 	};
 
 
-	public async postStatus(
-		authToken: AuthToken,
-		newStatus: Status
-	): Promise<void> {
+	public async postStatus(postRequest: PostStatusRequest): Promise<void> {
 		// Pause so we can see the logging out message. Remove when connected to the server
 		await new Promise((f) => setTimeout(f, 2000));
 
-		// TODO: Call the server to post the status
+		await this.storyDao.putStatus(
+			new Status(
+				postRequest.newStatus.post,
+				postRequest.newStatus.user,
+				postRequest.newStatus.timestamp
+			),
+			postRequest.newStatus.user.alias);
+
+		await this.feedDao.putStatus(
+			new Status(
+				postRequest.newStatus.post,
+				postRequest.newStatus.user,
+				postRequest.newStatus.timestamp),
+			postRequest.newStatus.user.alias);
+
 	};
 }

@@ -19,8 +19,6 @@ export class UserService extends DaoService {
 
 		const authenticate = await this.authDao.authenticate(username, password)
 
-		console.log(authenticate);
-
 		if (authenticate) {
 			const user: User | undefined = await this.userDao.getUser(username);
 			if (user === undefined) {
@@ -36,21 +34,20 @@ export class UserService extends DaoService {
 	};
 
 	public async register(
+		username: string,
+		password: string,
 		firstName: string,
 		lastName: string,
-		alias: string,
-		password: string,
 		userImageBytes: string
 	): Promise<[User, AuthToken]> {
 
-		let imageStringBase64: string =
-			Buffer.from(userImageBytes).toString("base64");
-		const imageUrl = await this.s3Dao.putImage(alias, imageStringBase64);
+		const imageUrl = await this.s3Dao.putImage(username, userImageBytes);
 
 		const authToken = AuthToken.Generate();
-		await this.authTokenDao.putAuthToken(authToken, alias);
+		await this.authTokenDao.putAuthToken(authToken, username);
 
-		const user = new User(firstName, lastName, alias, imageUrl);
+		const user = new User(firstName, lastName, username, imageUrl);
+		console.log(user);
 		await this.userDao.putUser(user, password);
 
 		if (user === null) {
@@ -61,6 +58,7 @@ export class UserService extends DaoService {
 	};
 
 	public async logout(authToken: AuthToken): Promise<void> {
+		await this.authTokenDao.deleteAuthToken(authToken);
 		// Pause so we can see the logging out message. Delete when the call to the server is implemented.
 		await new Promise((res) => setTimeout(res, 1000));
 	};

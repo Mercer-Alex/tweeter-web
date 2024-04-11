@@ -1,4 +1,4 @@
-import { LoginRequest, AuthenticateResponse, RegisterRequest, LogoutRequest, TweeterResponse, GetUserRequest, GetUserResponse, LoadMoreFeedItemsRequest, LoadMoreItemsResponse, LoadMoreStoryItemsRequest, LoadMoreFolloweesRequest, LoadMoreFollowsResponse, PostStatusRequest, GetIsFollowerStatusRequest, GetIsFollowerStatusResponse, GetFolloweesCountRequest, GetFollowCountResponse, GetFollowersCountRequest, FollowRequest, UnfollowRequest, LoadMoreFollowersRequest } from "tweeter-shared";
+import { LoginRequest, AuthenticateResponse, RegisterRequest, LogoutRequest, TweeterResponse, GetUserRequest, GetUserResponse, LoadMoreStatusItemsRequest, LoadMoreItemsResponse, LoadMoreFollowsRequest, LoadMoreFollowsResponse, PostStatusRequest, GetIsFollowerStatusRequest, GetIsFollowerStatusResponse, GetFolloweesCountRequest, GetFollowCountResponse, GetFollowersCountRequest, FollowRequest, UnfollowRequest } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
 
@@ -36,30 +36,30 @@ export class ServerFacade {
 		return GetUserResponse.fromJson(response);
 	}
 
-	async loadMoreFeedItems(request: LoadMoreFeedItemsRequest): Promise<LoadMoreItemsResponse> {
+	async loadMoreFeedItems(request: LoadMoreStatusItemsRequest): Promise<LoadMoreItemsResponse> {
 		const endpoint = "get/feed";
-		const response: JSON = await this.clientCommunicator.doPost<LoadMoreFeedItemsRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<LoadMoreStatusItemsRequest>(request, endpoint);
 
 		return LoadMoreItemsResponse.fromJson(response);
 	}
 
-	async loadMoreStoryItems(request: LoadMoreStoryItemsRequest): Promise<LoadMoreItemsResponse> {
+	async loadMoreStoryItems(request: LoadMoreStatusItemsRequest): Promise<LoadMoreItemsResponse> {
 		const endpoint = "get/story";
-		const response: JSON = await this.clientCommunicator.doPost<LoadMoreStoryItemsRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<LoadMoreStatusItemsRequest>(request, endpoint);
 
 		return LoadMoreItemsResponse.fromJson(response);
 	}
 
-	async loadMoreFollowers(request: LoadMoreFollowersRequest): Promise<LoadMoreFollowsResponse> {
+	async loadMoreFollowers(request: LoadMoreFollowsRequest): Promise<LoadMoreFollowsResponse> {
 		const endpoint = "get/followers";
-		const response: JSON = await this.clientCommunicator.doPost<LoadMoreFollowersRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<LoadMoreFollowsRequest>(request, endpoint);
 
 		return LoadMoreFollowsResponse.fromJson(response);
 	}
 
-	async loadMoreFollowees(request: LoadMoreFolloweesRequest): Promise<LoadMoreFollowsResponse> {
+	async loadMoreFollowees(request: LoadMoreFollowsRequest): Promise<LoadMoreFollowsResponse> {
 		const endpoint = "get/followees";
-		const response: JSON = await this.clientCommunicator.doPost<LoadMoreFolloweesRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<LoadMoreFollowsRequest>(request, endpoint);
 
 		return LoadMoreFollowsResponse.fromJson(response);
 	}

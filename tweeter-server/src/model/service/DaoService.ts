@@ -4,6 +4,8 @@ import UserDao from "../../dao/UserDao";
 import AuthTokenDao from "../../dao/AuthTokenDao";
 import S3Dao from "../../dao/S3Dao";
 import FollowDao from "../../dao/FollowDao";
+import StoryDao from "../../dao/StoryDao";
+import FeedDao from "../../dao/FeedDao";
 
 export class DaoService {
 	private _dao: DaoFactory | null = null;
@@ -12,6 +14,8 @@ export class DaoService {
 	private _authTokenDao: AuthTokenDao;
 	private _s3Dao: S3Dao;
 	private _followDao: FollowDao;
+	private _storyDao: StoryDao;
+	private _feedDao: FeedDao;
 
 	constructor() {
 		this._authDao = this.dao?.getAuthDao();
@@ -19,6 +23,8 @@ export class DaoService {
 		this._authTokenDao = this.dao?.getAuthTokenDao();
 		this._s3Dao = this.dao?.getS3Dao();
 		this._followDao = this.dao?.getFollowDao();
+		this._storyDao = this.dao?.getStoryDao();
+		this._feedDao = this.dao?.getFeedDao();
 	}
 
 	get dao(): DaoFactory {
@@ -46,5 +52,13 @@ export class DaoService {
 
 	get followDao(): FollowDao {
 		return this._followDao;
+	}
+
+	get feedDao(): FeedDao {
+		return this._feedDao;
+	}
+
+	get storyDao(): StoryDao {
+		return this._storyDao;
 	}
 }

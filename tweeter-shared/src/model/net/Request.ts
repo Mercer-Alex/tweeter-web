@@ -140,7 +140,7 @@ export class GetUserRequest extends TweeterRequest {
 	}
 }
 
-export class LoadMoreFeedItemsRequest extends TweeterRequest {
+export class LoadMoreStatusItemsRequest extends TweeterRequest {
 	public user: User;
 	public pageSize: number;
 	public lastItem: Status | null;
@@ -156,54 +156,18 @@ export class LoadMoreFeedItemsRequest extends TweeterRequest {
 		this.lastItem = lastItem;
 	}
 
-	static fromJson(json: JSON): LoadMoreFeedItemsRequest {
-		interface LoadMoreFeedItemsRequestJson {
+	static fromJson(json: JSON): LoadMoreStatusItemsRequest {
+		interface LoadMoreStatusItemsRequestJson {
 			authToken: AuthToken,
 			user: User,
 			pageSize: number,
 			lastItem: Status | null
 		}
 
-		const jsonObject: LoadMoreFeedItemsRequestJson =
-			json as unknown as LoadMoreFeedItemsRequestJson;
+		const jsonObject: LoadMoreStatusItemsRequestJson =
+			json as unknown as LoadMoreStatusItemsRequestJson;
 
-		return new LoadMoreFeedItemsRequest(
-			jsonObject.authToken!,
-			jsonObject.user,
-			jsonObject.pageSize,
-			jsonObject.lastItem,
-		);
-	}
-}
-
-export class LoadMoreStoryItemsRequest extends TweeterRequest {
-	public user: User;
-	public pageSize: number;
-	public lastItem: Status | null;
-
-	constructor(
-		authToken: AuthToken,
-		user: User,
-		pageSize: number,
-		lastItem: Status | null) {
-		super('', authToken);
-		this.user = user;
-		this.pageSize = pageSize;
-		this.lastItem = lastItem;
-	}
-
-	static fromJson(json: JSON): LoadMoreStoryItemsRequest {
-		interface LoadMoreStoryItemsRequestJson {
-			authToken: AuthToken,
-			user: User,
-			pageSize: number,
-			lastItem: Status | null
-		}
-
-		const jsonObject: LoadMoreStoryItemsRequestJson =
-			json as unknown as LoadMoreStoryItemsRequestJson;
-
-		return new LoadMoreStoryItemsRequest(
+		return new LoadMoreStatusItemsRequest(
 			jsonObject.authToken!,
 			jsonObject.user,
 			jsonObject.pageSize,
@@ -236,7 +200,7 @@ export class PostStatusRequest extends TweeterRequest {
 	}
 }
 
-export class LoadMoreFollowersRequest extends TweeterRequest {
+export class LoadMoreFollowsRequest extends TweeterRequest {
 	public user: User;
 	public pageSize: number;
 	public lastItem: User | null;
@@ -252,55 +216,19 @@ export class LoadMoreFollowersRequest extends TweeterRequest {
 		this.lastItem = lastItem
 	}
 
-	static fromJson(json: JSON): LoadMoreFollowersRequest {
-		interface LoadMoreFollowersRequestJson {
+	static fromJson(json: JSON): LoadMoreFollowsRequest {
+		interface LoadMoreFollowsRequestJson {
 			authToken: AuthToken,
 			user: User,
 			pageSize: number,
 			lastItem: User | null
 		}
 
-		const jsonObject: LoadMoreFollowersRequestJson =
-			json as unknown as LoadMoreFollowersRequestJson;
+		const jsonObject: LoadMoreFollowsRequestJson =
+			json as unknown as LoadMoreFollowsRequestJson;
 
-		return new LoadMoreFollowersRequest(
+		return new LoadMoreFollowsRequest(
 			jsonObject.authToken!,
-			jsonObject.user,
-			jsonObject.pageSize,
-			jsonObject.lastItem,
-		);
-	}
-}
-
-export class LoadMoreFolloweesRequest extends TweeterRequest {
-	public user: User;
-	public pageSize: number;
-	public lastItem: User | null;
-
-	constructor(
-		authToken: AuthToken,
-		user: User,
-		pageSize: number,
-		lastItem: User | null) {
-		super(user.alias, authToken);
-		this.user = user;
-		this.pageSize = pageSize;
-		this.lastItem = lastItem
-	}
-
-	static fromJson(json: JSON): LoadMoreFollowersRequest {
-		interface LoadMoreFollowersRequestJson {
-			_authToken: AuthToken,
-			user: User,
-			pageSize: number,
-			lastItem: User | null
-		}
-
-		const jsonObject: LoadMoreFollowersRequestJson =
-			json as unknown as LoadMoreFollowersRequestJson;
-
-		return new LoadMoreFollowersRequest(
-			jsonObject._authToken!,
 			jsonObject.user,
 			jsonObject.pageSize,
 			jsonObject.lastItem,

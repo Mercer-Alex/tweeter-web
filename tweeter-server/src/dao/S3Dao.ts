@@ -1,5 +1,5 @@
 
-import { ObjectCannedACL, PutObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3";
+import { ObjectCannedACL, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { S3DaoInterface } from "./DaoInterface";
 
 const BUCKET: string = 'alex-cs340'
@@ -26,7 +26,7 @@ export default class S3Dao implements S3DaoInterface {
 		try {
 			await client.send(c);
 			return (
-				`https://${BUCKET}.s3.us-east-1.amazonaws.com/image/{fileName}`
+				`https://${BUCKET}.s3.us-east-1.amazonaws.com/image/${fileName}`
 			);
 		} catch (error) {
 			throw Error("s3 put image failed with: " + error);

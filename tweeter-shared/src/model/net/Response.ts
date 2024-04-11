@@ -44,12 +44,12 @@ export class AuthenticateResponse extends TweeterResponse {
 	constructor(
 		success: boolean,
 		user: User,
-		token: AuthToken,
+		authToken: AuthToken,
 		message: string | null = null
 	) {
 		super(success, message);
 		this._user = user;
-		this._token = token;
+		this._token = authToken;
 	}
 
 	get user() {
