@@ -1,17 +1,22 @@
-import { LoadMoreFolloweesRequest, LoadMoreFollowsResponse } from "tweeter-shared";
+import { LoadMoreFollowsRequest, LoadMoreFollowsResponse } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
-export const handler = async (event: LoadMoreFolloweesRequest): Promise<LoadMoreFollowsResponse> => {
+export const handler = async (event: LoadMoreFollowsRequest): Promise<LoadMoreFollowsResponse> => {
 	let response: LoadMoreFollowsResponse;
+
+	let request: LoadMoreFollowsRequest = LoadMoreFollowsRequest.fromJson(event);
+
+	console.log('followees lambda', request);
+
 
 	try {
 		response = new LoadMoreFollowsResponse(
 			true,
 			...(await new FollowService().loadMoreUsers(
-				event.authToken!,
-				event.user,
-				event.pageSize,
-				event.lastItem,
+				request._authToken!,
+				request.user,
+				request.pageSize,
+				request.lastItem,
 				true
 			)),
 			null

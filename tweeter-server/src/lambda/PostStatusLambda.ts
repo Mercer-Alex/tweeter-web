@@ -5,10 +5,10 @@ import { StatusService } from "../model/service/StatusService";
 export const handler = async (event: PostStatusRequest): Promise<TweeterResponse> => {
 	let response: TweeterResponse;
 
-	console.log('poststatus', event);
+	let request: PostStatusRequest = PostStatusRequest.fromJson(event);
 
 	try {
-		await new StatusService().postStatus(event.newStatus);
+		await new StatusService().postStatus(request.newStatus);
 		response = new TweeterResponse(true);
 	} catch (error) {
 		throw new Error(`[400] bad request: ${error}`);

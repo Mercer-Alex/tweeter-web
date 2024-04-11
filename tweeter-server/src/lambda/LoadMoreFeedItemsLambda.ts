@@ -1,18 +1,21 @@
-import { LoadMoreFeedItemsRequest, LoadMoreItemsResponse } from "tweeter-shared";
+import { LoadMoreStatusItemsRequest, LoadMoreItemsResponse } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
 
 
-export const handler = async (event: LoadMoreFeedItemsRequest): Promise<LoadMoreItemsResponse> => {
+export const handler = async (event: LoadMoreStatusItemsRequest): Promise<LoadMoreItemsResponse> => {
 	let response: LoadMoreItemsResponse;
+
+	let request: LoadMoreStatusItemsRequest = LoadMoreStatusItemsRequest.fromJson(event);
 
 	try {
 		response = new LoadMoreItemsResponse(
 			true,
 			...(await new StatusService().loadMoreStatusItems(
-				event.authToken!,
-				event.user,
-				event.pageSize,
-				event.lastItem
+				request._authToken!,
+				request.user,
+				request.pageSize,
+				request.lastItem,
+				false
 			)),
 			null
 		);

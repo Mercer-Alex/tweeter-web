@@ -10,15 +10,30 @@ export class FollowService extends DaoService {
 		lastItem: User | null,
 		followees: boolean
 	): Promise<[User[], boolean]> {
+		let follows: [string[], boolean];
+		let usersList: User[] = [];
 
-		if (followees && lastItem) {
-			let followers = await this.followDao.getPageOfFollowees(user.alias, pageSize, lastItem!.alias);
-			return [followers[0], followers[1]];
+		if (followees) {
+			follows = await this.followDao.getPageOfFollowees(user.alias, pageSize, lastItem?.alias);
 		}
 		else {
-			let followers = await this.followDao.getPageOfFollowers(user.alias, pageSize, lastItem!.alias);
-			return [followers[0], followers[1]];
+			follows = await this.followDao.getPageOfFollowers(user.alias, pageSize, lastItem?.alias);
 		}
+
+		console.log('after running getPageOfFollowers', follows);
+
+		follows[0].forEach(async alias => {
+			console.log(alias);
+			let userToAdd: User | null | undefined = await this.userDao.getUser(alias);
+			console.log('user to add', userToAdd);
+			usersList.push(userToAdd!);
+		});
+
+		console.log('userlist', usersList);
+
+
+		return [usersList, follows[1]]
+
 	};
 
 	public async getIsFollowerStatus(

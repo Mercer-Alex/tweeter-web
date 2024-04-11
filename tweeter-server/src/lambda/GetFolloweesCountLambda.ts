@@ -7,7 +7,7 @@ export const handler = async (event: GetFolloweesCountRequest): Promise<GetFollo
 	try {
 		response = new GetFollowCountResponse(
 			true,
-			await new FollowService().getFolloweesCount(event.authToken!, event.user),
+			await new FollowService().getFolloweesCount(event._authToken!, event.user),
 			null
 		);
 	} catch (error) {

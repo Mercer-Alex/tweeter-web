@@ -6,8 +6,8 @@ export interface AuthDaoInterface {
 }
 
 export interface FollowDaoInterface {
-	getPageOfFollowers(followerHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[User[], boolean]>;
-	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[User[], boolean]>;
+	getPageOfFollowers(followerHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[String[], boolean]>;
+	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[String[], boolean]>;
 	putFollow(follow: Follow): Promise<void>;
 	getFollow(follow: Follow): Promise<boolean>;
 	deleteFollow(follow: Follow): Promise<void>;

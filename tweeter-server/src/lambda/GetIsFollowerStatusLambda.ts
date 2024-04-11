@@ -5,8 +5,10 @@ import { FollowService } from "../model/service/FollowService";
 export const handler = async (event: GetIsFollowerStatusRequest): Promise<GetIsFollowerStatusResponse> => {
 	let response: GetIsFollowerStatusResponse;
 
+	let request: GetIsFollowerStatusRequest = GetIsFollowerStatusRequest.fromJson(event);
+
 	try {
-		const isFollower = await new FollowService().getIsFollowerStatus(event.authToken!, event.user, event.selectedUser)
+		const isFollower = await new FollowService().getIsFollowerStatus(request._authToken!, request.user, request.selectedUser)
 
 		response = new GetIsFollowerStatusResponse(isFollower, true)
 	} catch (error) {

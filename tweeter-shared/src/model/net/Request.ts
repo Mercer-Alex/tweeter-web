@@ -11,18 +11,17 @@ export class TweeterRequest {
 		this._username = username;
 	}
 
-	static fromJson(json: JSON): TweeterRequest {
-		interface TweeterRequestJson {
-			username: string;
-			authToken: AuthToken;
+	static fromJson(json: TweeterRequest): TweeterRequest {
+		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken))
+
+		let deserializedUsername = '';
+		if (json._username!) {
+			deserializedUsername = User.fromJson(JSON.stringify(json._username))?._alias!
 		}
 
-		const jsonObject: TweeterRequestJson =
-			json as unknown as TweeterRequestJson;
-
 		return new TweeterRequest(
-			jsonObject.username,
-			jsonObject.authToken
+			deserializedUsername,
+			deserializedAuth!
 		);
 	}
 
@@ -42,18 +41,13 @@ export class LoginRequest extends TweeterRequest {
 		this.password = password;
 	}
 
-	static fromJson(json: JSON): LoginRequest {
-		interface LoginRequestJson {
-			username: string;
-			password: string;
-		}
-
-		const jsonObject: LoginRequestJson =
-			json as unknown as LoginRequestJson;
+	static fromJson(json: LoginRequest): LoginRequest {
+		let deserializedUsername: string = User.fromJson(JSON.stringify(json._username))?.alias!;
+		let deserializedPassword: string = JSON.stringify(json.password);;
 
 		return new LoginRequest(
-			jsonObject.username,
-			jsonObject.password,
+			deserializedUsername,
+			deserializedPassword,
 		);
 	}
 }
@@ -64,16 +58,11 @@ export class LogoutRequest extends TweeterRequest {
 		super('', authToken);
 	}
 
-	static fromJson(json: JSON): LogoutRequest {
-		interface LogoutRequestJson {
-			authToken: AuthToken;
-		}
-
-		const jsonObject: LogoutRequestJson =
-			json as unknown as LogoutRequestJson;
+	static fromJson(json: LogoutRequest): LogoutRequest {
+		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken))
 
 		return new LogoutRequest(
-			jsonObject.authToken!,
+			deserializedAuth!,
 		);
 	}
 }
@@ -96,24 +85,19 @@ export class RegisterRequest extends LoginRequest {
 		this.image = image;
 	}
 
-	static fromJson(json: JSON): RegisterRequest {
-		interface RegisterRequestJson {
-			username: string,
-			password: string,
-			firstName: string,
-			lastName: string,
-			image: string
-		}
-
-		const jsonObject: RegisterRequestJson =
-			json as unknown as RegisterRequestJson;
+	static fromJson(json: RegisterRequest): RegisterRequest {
+		let deserializedUsername: string = User.fromJson(JSON.stringify(json._username))?.alias!;
+		let deserializedPassword: string = JSON.stringify(json.password);;
+		let deserializedFirstName = User.fromJson(JSON.stringify(json.firstName))?.firstName!;
+		let deserializedLastName: string = User.fromJson(JSON.stringify(json.lastName))?.lastName!;
+		let deserializedImage: string = User.fromJson(JSON.stringify(json.image))?.imageUrl!;
 
 		return new RegisterRequest(
-			jsonObject.username,
-			jsonObject.password,
-			jsonObject.firstName,
-			jsonObject.lastName,
-			jsonObject.image,
+			deserializedUsername,
+			deserializedPassword,
+			deserializedFirstName,
+			deserializedLastName,
+			deserializedImage,
 		);
 	}
 }
@@ -124,18 +108,13 @@ export class GetUserRequest extends TweeterRequest {
 		super(username, auth);
 	}
 
-	static fromJson(json: JSON): GetUserRequest {
-		interface GetUserRequestJson {
-			authToken: AuthToken;
-			username: string;
-		}
-
-		const jsonObject: GetUserRequestJson =
-			json as unknown as GetUserRequestJson;
+	static fromJson(json: GetUserRequest): GetUserRequest {
+		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken));
+		let deserializedUsername = User.fromJson(JSON.stringify(json._username))?._alias;
 
 		return new GetUserRequest(
-			jsonObject.authToken!,
-			jsonObject.username,
+			deserializedAuth!,
+			deserializedUsername!,
 		);
 	}
 }
@@ -156,22 +135,21 @@ export class LoadMoreStatusItemsRequest extends TweeterRequest {
 		this.lastItem = lastItem;
 	}
 
-	static fromJson(json: JSON): LoadMoreStatusItemsRequest {
-		interface LoadMoreStatusItemsRequestJson {
-			authToken: AuthToken,
-			user: User,
-			pageSize: number,
-			lastItem: Status | null
+	static fromJson(json: LoadMoreStatusItemsRequest): LoadMoreStatusItemsRequest {
+		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken))
+		let deserializedUser = User.fromJson(JSON.stringify(json.user));
+		let deserializedPageSize = json.pageSize;
+		let deserializedLastItem = undefined;
+
+		if (json.lastItem != null) {
+			deserializedLastItem = Status.fromJson(JSON.stringify(json.lastItem));
 		}
 
-		const jsonObject: LoadMoreStatusItemsRequestJson =
-			json as unknown as LoadMoreStatusItemsRequestJson;
-
 		return new LoadMoreStatusItemsRequest(
-			jsonObject.authToken!,
-			jsonObject.user,
-			jsonObject.pageSize,
-			jsonObject.lastItem,
+			deserializedAuth!,
+			deserializedUser!,
+			deserializedPageSize,
+			deserializedLastItem!,
 		);
 	}
 }
@@ -184,18 +162,14 @@ export class PostStatusRequest extends TweeterRequest {
 		this.newStatus = newStatus;
 	}
 
-	static fromJson(json: JSON): PostStatusRequest {
-		interface PostStatusRequestJson {
-			authToken: AuthToken;
-			newStatus: Status;
-		}
+	static fromJson(json: PostStatusRequest): PostStatusRequest {
+		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken));
+		let desializedStatus = Status.fromJson(JSON.stringify(json.newStatus));
 
-		const jsonObject: PostStatusRequestJson =
-			json as unknown as PostStatusRequestJson;
 
 		return new PostStatusRequest(
-			jsonObject.authToken!,
-			jsonObject.newStatus,
+			deserializedAuth!,
+			desializedStatus!,
 		);
 	}
 }
@@ -216,22 +190,21 @@ export class LoadMoreFollowsRequest extends TweeterRequest {
 		this.lastItem = lastItem
 	}
 
-	static fromJson(json: JSON): LoadMoreFollowsRequest {
-		interface LoadMoreFollowsRequestJson {
-			authToken: AuthToken,
-			user: User,
-			pageSize: number,
-			lastItem: User | null
+	static fromJson(json: LoadMoreFollowsRequest): LoadMoreFollowsRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
+		let deserializedPageSize: number = json.pageSize;
+		let deserializedLastItem: User | null = null;
+
+		if (json.lastItem != null) {
+			deserializedLastItem = User.fromJson(JSON.stringify(json.user));
 		}
 
-		const jsonObject: LoadMoreFollowsRequestJson =
-			json as unknown as LoadMoreFollowsRequestJson;
-
 		return new LoadMoreFollowsRequest(
-			jsonObject.authToken!,
-			jsonObject.user,
-			jsonObject.pageSize,
-			jsonObject.lastItem,
+			deserializedAuth!,
+			deserializedUser,
+			deserializedPageSize,
+			deserializedLastItem,
 		);
 	}
 }
@@ -246,20 +219,16 @@ export class GetIsFollowerStatusRequest extends TweeterRequest {
 		this.selectedUser = selectedUser;
 	}
 
-	static fromJson(json: JSON): GetIsFollowerStatusRequest {
-		interface GetIsFollowerStatusRequestJson {
-			_authToken: AuthToken;
-			user: User;
-			selectedUser: User;
-		}
+	static fromJson(json: GetIsFollowerStatusRequest): GetIsFollowerStatusRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
+		let deserializedSelectedUser: User = User.fromJson(JSON.stringify(json.selectedUser))!;
 
-		const jsonObject: GetIsFollowerStatusRequestJson =
-			json as unknown as GetIsFollowerStatusRequestJson;
 
 		return new GetIsFollowerStatusRequest(
-			jsonObject._authToken,
-			jsonObject.user,
-			jsonObject.selectedUser,
+			deserializedAuth,
+			deserializedUser,
+			deserializedSelectedUser,
 		);
 	}
 }
@@ -272,45 +241,17 @@ export class GetFolloweesCountRequest extends TweeterRequest {
 		this.user = user;
 	}
 
-	static fromJson(json: JSON): GetFolloweesCountRequest {
-		interface GetFolloweesCountRequestJson {
-			authToken: AuthToken;
-			user: User;
-		}
-
-		const jsonObject: GetFolloweesCountRequestJson =
-			json as unknown as GetFolloweesCountRequestJson;
+	static fromJson(json: GetFolloweesCountRequest): GetFolloweesCountRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 
 		return new GetFolloweesCountRequest(
-			jsonObject.authToken,
-			jsonObject.user,
+			deserializedAuth,
+			deserializedUser,
 		);
 	}
 }
 
-export class GetFollowersCountRequest extends TweeterRequest {
-	public user: User;
-
-	constructor(authToken: AuthToken, user: User) {
-		super(user.alias, authToken);
-		this.user = user;
-	}
-
-	static fromJson(json: JSON): GetFollowersCountRequest {
-		interface GetFollowersCountRequestRequestJson {
-			authToken: AuthToken;
-			user: User;
-		}
-
-		const jsonObject: GetFollowersCountRequestRequestJson =
-			json as unknown as GetFollowersCountRequestRequestJson;
-
-		return new GetFollowersCountRequest(
-			jsonObject.authToken,
-			jsonObject.user,
-		);
-	}
-}
 
 export class FollowRequest extends TweeterRequest {
 	public user: User;
@@ -320,18 +261,13 @@ export class FollowRequest extends TweeterRequest {
 		this.user = user;
 	}
 
-	static fromJson(json: JSON): FollowRequest {
-		interface FollowRequestRequestJson {
-			_authToken: AuthToken;
-			user: User;
-		}
+	static fromJson(json: FollowRequest): FollowRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 
-		const jsonObject: FollowRequestRequestJson =
-			json as unknown as FollowRequestRequestJson;
-
-		return new FollowRequest(
-			jsonObject._authToken,
-			jsonObject.user,
+		return new GetFolloweesCountRequest(
+			deserializedAuth,
+			deserializedUser,
 		);
 	}
 }
@@ -344,18 +280,32 @@ export class UnfollowRequest extends TweeterRequest {
 		this.user = user;
 	}
 
-	static fromJson(json: JSON): UnfollowRequest {
-		interface UnfollowRequestRequestJson {
-			authToken: AuthToken;
-			user: User;
-		}
+	static fromJson(json: UnfollowRequest): UnfollowRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 
-		const jsonObject: UnfollowRequestRequestJson =
-			json as unknown as UnfollowRequestRequestJson;
+		return new GetFolloweesCountRequest(
+			deserializedAuth,
+			deserializedUser,
+		);
+	}
+}
 
-		return new UnfollowRequest(
-			jsonObject.authToken,
-			jsonObject.user,
+export class GetFollowersCountRequest extends TweeterRequest {
+	public user: User;
+
+	constructor(authToken: AuthToken, user: User) {
+		super(user.alias, authToken);
+		this.user = user;
+	}
+
+	static fromJson(json: GetFolloweesCountRequest): GetFolloweesCountRequest {
+		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
+		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
+
+		return new GetFolloweesCountRequest(
+			deserializedAuth,
+			deserializedUser,
 		);
 	}
 }

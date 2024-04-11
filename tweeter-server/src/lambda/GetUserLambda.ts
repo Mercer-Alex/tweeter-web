@@ -5,8 +5,10 @@ import { GetUserRequest, GetUserResponse } from "tweeter-shared";
 export const handler = async (event: GetUserRequest): Promise<GetUserResponse> => {
 	let response: GetUserResponse;
 
+	let request: GetUserRequest = GetUserRequest.fromJson(event);
+
 	try {
-		const user = await new UserService().getUser(event.authToken!, event.username);
+		const user = await new UserService().getUser(request._authToken!, request._username);
 
 		if (!user) {
 			response = new GetUserResponse(
