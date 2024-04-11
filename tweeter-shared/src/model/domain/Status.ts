@@ -3,10 +3,10 @@ import { User } from "./User";
 import moment from "moment";
 
 export class Status {
-  private _post: string;
-  private _user: User;
-  private _timestamp: number;
-  private _segments: PostSegment[];
+  _post: string;
+  _user: User;
+  _timestamp: number;
+  _segments: PostSegment[];
 
   public constructor(post: string, user: User, timestamp: number) {
     this._post = post;

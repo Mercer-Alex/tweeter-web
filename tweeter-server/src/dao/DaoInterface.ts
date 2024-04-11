@@ -24,9 +24,9 @@ export interface UserDaoInterface {
 }
 
 export interface AuthTokenDaoInterface {
-	putAuthToken(token: AuthToken, username: string): Promise<void>;
-	deleteAuthToken(token: AuthToken): Promise<void>;
-	checkAuthToken(token: AuthToken): Promise<[AuthToken, string] | [undefined, undefined]>;
+	putAuthToken(authToken: AuthToken, username: string): Promise<void>;
+	deleteAuthToken(authToken: AuthToken): Promise<void>;
+	checkAuthToken(authToken: AuthToken): Promise<[AuthToken, string] | [undefined, undefined]>;
 }
 
 export interface S3DaoInterface {
@@ -34,7 +34,7 @@ export interface S3DaoInterface {
 }
 
 export interface StatusDaoInterface {
-	getPageofStatuses(username: string, pageSize: number): Promise<[Status[], boolean]>;
+	getPageofStatuses(username: string, pageSize: number, lastItem: Status | null): Promise<[Status[], boolean]>;
 	getStatus(status: Status, username: string): Promise<Status | undefined>;
 	putStatus(status: Status, username: string): Promise<void>;
 }

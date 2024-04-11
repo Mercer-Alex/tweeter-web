@@ -6,7 +6,7 @@ export const handler = async (event: RegisterRequest): Promise<AuthenticateRespo
 	try {
 		response = new AuthenticateResponse(
 			true,
-			...(await new UserService().register(event.username, event.password, event.firstName, event.lastName, event.image)),
+			...(await new UserService().register(event._username, event.password, event.firstName, event.lastName, event.image)),
 			null
 		);
 	} catch (error) {

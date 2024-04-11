@@ -26,6 +26,7 @@ export class UserService extends DaoService {
 			}
 			const authToken = AuthToken.Generate();
 			await this.authTokenDao.putAuthToken(authToken, username);
+			console.log("login", authToken);
 
 			return [user!, authToken];
 		}
@@ -47,7 +48,6 @@ export class UserService extends DaoService {
 		await this.authTokenDao.putAuthToken(authToken, username);
 
 		const user = new User(firstName, lastName, username, imageUrl);
-		console.log(user);
 		await this.userDao.putUser(user, password);
 
 		if (user === null) {
@@ -58,6 +58,7 @@ export class UserService extends DaoService {
 	};
 
 	public async logout(authToken: AuthToken): Promise<void> {
+		console.log("logout", authToken);
 		await this.authTokenDao.deleteAuthToken(authToken);
 		// Pause so we can see the logging out message. Delete when the call to the server is implemented.
 		await new Promise((res) => setTimeout(res, 1000));

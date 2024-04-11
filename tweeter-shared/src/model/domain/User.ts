@@ -1,8 +1,8 @@
 export class User {
-  private _firstName: string;
-  private _lastName: string;
-  private _alias: string;
-  private _imageUrl: string;
+  _firstName: string;
+  _lastName: string;
+  _alias: string;
+  _imageUrl: string;
 
   public constructor(
     firstName: string,

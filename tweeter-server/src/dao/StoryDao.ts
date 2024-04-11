@@ -1,25 +1,21 @@
 import { Status } from "tweeter-shared";
 import { StatusDaoInterface } from "./DaoInterface";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
-	DeleteCommand,
-	DynamoDBDocumentClient,
 	GetCommand,
 	PutCommand,
 	QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
+import BaseDao from "./BaseDao";
 
-export default class StatusDao implements StatusDaoInterface {
+export default class StoryDao extends BaseDao implements StatusDaoInterface {
 	readonly tableName = "story";
 	readonly indexNam = "story_index";
 	readonly author_handleAttr: string = "author_handle";
 	readonly postAttr = "post";
 	readonly time_stampAttr = "time_stamp";
 
-	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-
-	async getPageofStatuses(username: string, pageSize: number): Promise<[Status[], boolean]> {
+	async getPageofStatuses(username: string, pageSize: number, lastStatus: Status | null): Promise<[Status[], boolean]> {
 		const params = {
 			TableName: this.tableName,
 			KeyConditionExpression: 'author_handle = :author_handle',
@@ -59,10 +55,11 @@ export default class StatusDao implements StatusDaoInterface {
 			TableName: this.tableName,
 			Item: {
 				[this.postAttr]: status.toJson,
-				[this.time_stampAttr]: status.timestamp,
+				[this.time_stampAttr]: status.timestamp.toString(),
 				[this.author_handleAttr]: username,
 			},
 		};
+		console.log(params);
 		await this.client.send(new PutCommand(params));
 	}
 }

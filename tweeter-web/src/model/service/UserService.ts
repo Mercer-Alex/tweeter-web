@@ -9,7 +9,6 @@ export class UserService {
     this.serverFacade = new ServerFacade();
   }
 
-
   public async getUser(
     authToken: AuthToken,
     username: string

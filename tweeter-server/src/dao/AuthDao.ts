@@ -1,20 +1,17 @@
 import { AuthDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
-	DynamoDBDocumentClient,
 	GetCommand,
 	PutCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import * as CryptoJS from 'crypto-js';
+import BaseDao from "./BaseDao";
 
 
-export default class AuthDao implements AuthDaoInterface {
+export default class AuthDao extends BaseDao implements AuthDaoInterface {
 	readonly tableName = "auth";
 	readonly usernameAttr = "username";
 	readonly passwordAttr = "password";
-
-	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 
 	async putAuthentication(username: string, password: string): Promise<void> {

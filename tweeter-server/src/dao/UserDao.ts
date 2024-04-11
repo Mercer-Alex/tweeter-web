@@ -1,16 +1,15 @@
 import { UserDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
-	DynamoDBDocumentClient,
 	GetCommand,
 	PutCommand,
 	UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import * as CryptoJS from 'crypto-js';
 import { User } from "tweeter-shared";
+import BaseDao from "./BaseDao";
 
-export default class UserDao implements UserDaoInterface {
+export default class UserDao extends BaseDao implements UserDaoInterface {
 	readonly tableName = "users";
 	readonly usernameAttr = "username";
 	readonly first_nameAttr = "first_name";
@@ -19,9 +18,6 @@ export default class UserDao implements UserDaoInterface {
 	readonly followersAttr = "followers";
 	readonly followeesAttr = "followees";
 	readonly passwordAttr = "password";
-
-
-	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 	async updateFollowersCount(username: string, value: number): Promise<void> {
 		const params = {

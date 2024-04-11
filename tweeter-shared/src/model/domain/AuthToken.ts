@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 export class AuthToken {
-  private _token: string;
-  private _timestamp: number;
+  _token: string;
+  _timestamp: number;
 
   public static Generate(): AuthToken {
     let token: string = AuthToken.generateToken();
@@ -10,9 +10,9 @@ export class AuthToken {
   }
 
   private static generateToken(): string {
-    try{
+    try {
       return uuid().toString();
-    } catch(error) {
+    } catch (error) {
       // UUID not available. Generating a random string. Making it 64 characters to reduce the liklihood of a duplicate
       let result = '';
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$^*()-+';

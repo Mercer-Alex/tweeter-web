@@ -1,8 +1,10 @@
 import AuthDao from "./AuthDao";
 import AuthTokenDao from "./AuthTokenDao";
 import { DaoFactoryInterface } from "./DaoFactoryInterface";
+import FeedDao from "./FeedDao";
 import FollowDao from "./FollowDao";
 import S3Dao from "./S3Dao";
+import StoryDao from "./StoryDao";
 import UserDao from "./UserDao";
 
 export class DaoFactory implements DaoFactoryInterface {
@@ -20,5 +22,11 @@ export class DaoFactory implements DaoFactoryInterface {
 	}
 	getS3Dao(): S3Dao {
 		return new S3Dao();
+	}
+	getStoryDao(): StoryDao {
+		return new StoryDao();
+	}
+	getFeedDao(): FeedDao {
+		return new FeedDao;
 	}
 }

@@ -6,10 +6,10 @@ export enum Type {
 }
 
 export class PostSegment {
-  private _text: string;
-  private _startPostion: number;
-  private _endPosition: number;
-  private _type: Type;
+  _text: string;
+  _startPostion: number;
+  _endPosition: number;
+  _type: Type;
 
   public constructor(
     text: string,
