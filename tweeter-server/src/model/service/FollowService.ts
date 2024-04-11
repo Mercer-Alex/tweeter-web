@@ -2,24 +2,23 @@ import { AuthToken, User, FakeData } from "tweeter-shared";
 import { DaoService } from "./DaoService";
 
 export class FollowService extends DaoService {
-	public async loadMoreFollowers(
-		authToken: AuthToken,
-		user: User,
-		pageSize: number,
-		lastItem: User | null
-	): Promise<[User[], boolean]> {
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-	};
 
-	public async loadMoreFollowees(
+	public async loadMoreUsers(
 		authToken: AuthToken,
 		user: User,
 		pageSize: number,
-		lastItem: User | null
+		lastItem: User | null,
+		followees: boolean
 	): Promise<[User[], boolean]> {
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
+
+		if (followees && lastItem) {
+			let followers = await this.followDao.getPageOfFollowees(user.alias, pageSize, lastItem!.alias);
+			return [followers[0], followers[1]];
+		}
+		else {
+			let followers = await this.followDao.getPageOfFollowers(user.alias, pageSize, lastItem!.alias);
+			return [followers[0], followers[1]];
+		}
 	};
 
 	public async getIsFollowerStatus(
@@ -27,6 +26,7 @@ export class FollowService extends DaoService {
 		user: User,
 		selectedUser: User
 	): Promise<boolean> {
+
 		// TODO: Replace with the result of calling server
 		return FakeData.instance.isFollower();
 	};

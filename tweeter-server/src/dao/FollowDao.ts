@@ -1,4 +1,4 @@
-import { Follow } from "tweeter-shared";
+import { Follow, User } from "tweeter-shared";
 import { FollowDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
@@ -20,58 +20,51 @@ export default class FollowDao implements FollowDaoInterface {
 	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 
-	async getPageOfFollowees(followerHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[string[], boolean]> {
+	async getPageOfFollowees(followerHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[User[], boolean]> {
 		const params = {
-			KeyConditionExpression: this.followee_handleAttr + " = :followee_handle",
-			ExpressionAttributeValues: {
-				":follower_handle": followerHandle,
-			},
 			TableName: this.tableName,
-			IndexName: this.indexName,
+			KeyConditionExpression: 'follower_handle = :follower_handle',
+			ExpressionAttributeValues: {
+				':follower_handle': followerHandle,
+			},
 			Limit: pageSize,
-			ExclusiveStartKey:
-				lastFolloweeHandle === undefined
-					? undefined
-					: {
-						[this.follower_handleAttr]: followerHandle,
-						[this.followee_handleAttr]: lastFolloweeHandle,
-					},
+			ExclusiveStartKey: lastFolloweeHandle
+				? { [this.follower_handleAttr]: followerHandle, [this.followee_handleAttr]: lastFolloweeHandle }
+				: undefined,
 		};
 
-		const items: string[] = [];
+		const items: User[] = [];
 		const data = await this.client.send(new QueryCommand(params));
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
 		data.Items?.forEach((item) =>
-			items.push(item[this.followee_handleAttr])
+			items.push(User.fromJson(item[this.followee_handleAttr])!)
 		);
 
 		return [items, hasMorePages]
 	}
-	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFolloweHandle: string | undefined): Promise<[string[], boolean]> {
+	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[User[], boolean]> {
 		const params = {
-			KeyConditionExpression: this.follower_handleAttr + " = :follower_handle",
-			ExpressionAttributeValues: {
-				":followee_handle": followeeHandle,
-			},
 			TableName: this.tableName,
-			IndexName: this.indexName,
+			IndexName: "follows_index",
+			KeyConditionExpression: 'followee_handle = :followee_handle',
+			ExpressionAttributeValues: {
+				':followee_handle': followeeHandle,
+			},
 			Limit: pageSize,
 			ExclusiveStartKey:
-				lastFolloweHandle === undefined
-					? undefined
-					: {
-						[this.followee_handleAttr]: lastFolloweHandle,
-						[this.follower_handleAttr]: followeeHandle,
-					},
+				lastFollowerHandle
+					? { [this.followee_handleAttr]: followeeHandle, [this.follower_handleAttr]: lastFollowerHandle }
+					: undefined,
 		};
 
-		const items: string[] = [];
-		console.log(params);
+		const items: User[] = [];
 		const data = await this.client.send(new QueryCommand(params));
+
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
+
 		data.Items?.forEach((item) =>
-			items.push(item[this.follower_handleAttr])
+			items.push(User.fromJson(item[this.follower_handleAttr])!)
 		);
 
 		return [items, hasMorePages];

@@ -6,7 +6,7 @@ export const handler = async (event: LoginRequest): Promise<AuthenticateResponse
 	try {
 		response = new AuthenticateResponse(
 			true,
-			...(await new UserService().login(event.username, event.password)),
+			...(await new UserService().login(event._username, event.password)),
 			null
 		);
 	} catch (error) {

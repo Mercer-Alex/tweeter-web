@@ -7,11 +7,12 @@ export const handler = async (event: LoadMoreFolloweesRequest): Promise<LoadMore
 	try {
 		response = new LoadMoreFollowsResponse(
 			true,
-			...(await new FollowService().loadMoreFollowees(
+			...(await new FollowService().loadMoreUsers(
 				event.authToken!,
 				event.user,
 				event.pageSize,
-				event.lastItem
+				event.lastItem,
+				true
 			)),
 			null
 		);

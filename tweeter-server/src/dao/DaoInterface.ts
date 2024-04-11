@@ -1,4 +1,4 @@
-import { Follow, User, AuthToken } from "tweeter-shared";
+import { Follow, User, AuthToken, Status } from "tweeter-shared";
 
 export interface AuthDaoInterface {
 	putAuthentication(username: string, password: string): Promise<void>;
@@ -6,8 +6,8 @@ export interface AuthDaoInterface {
 }
 
 export interface FollowDaoInterface {
-	getPageOfFollowers(followerHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]>;
-	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[string[], boolean]>;
+	getPageOfFollowers(followerHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[User[], boolean]>;
+	getPageOfFollowees(followeeHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[User[], boolean]>;
 	putFollow(follow: Follow): Promise<void>;
 	getFollow(follow: Follow): Promise<boolean>;
 	deleteFollow(follow: Follow): Promise<void>;
@@ -31,4 +31,10 @@ export interface AuthTokenDaoInterface {
 
 export interface S3DaoInterface {
 	putImage(fileName: string, imageStringBase64Encoded: string): Promise<string>;
+}
+
+export interface StatusDaoInterface {
+	getPageofStatuses(username: string, pageSize: number): Promise<[Status[], boolean]>;
+	getStatus(status: Status, username: string): Promise<Status | undefined>;
+	putStatus(status: Status, username: string): Promise<void>;
 }
