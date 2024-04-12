@@ -7,6 +7,9 @@ export class UserService extends DaoService {
 		authToken: AuthToken,
 		alias: string
 	): Promise<User | undefined> {
+		if (!await this.authTokenDao.checkAuthToken(authToken)) {
+			throw new Error('Invalid auth token');
+		}
 		const getUser: User | undefined = await this.userDao.getUser(alias);
 
 		return getUser;
@@ -26,7 +29,6 @@ export class UserService extends DaoService {
 			}
 			const authToken = AuthToken.Generate();
 			await this.authTokenDao.putAuthToken(authToken, username);
-			console.log("login", authToken);
 
 			return [user!, authToken];
 		}
@@ -47,6 +49,8 @@ export class UserService extends DaoService {
 		const authToken = AuthToken.Generate();
 		await this.authTokenDao.putAuthToken(authToken, username);
 
+		await this.authDao.putAuthentication(username, password);
+
 		const user = new User(firstName, lastName, username, imageUrl);
 		await this.userDao.putUser(user, password);
 
@@ -58,10 +62,6 @@ export class UserService extends DaoService {
 	};
 
 	public async logout(authToken: AuthToken): Promise<void> {
-		console.log("logout", authToken);
 		await this.authTokenDao.deleteAuthToken(authToken);
-		// Pause so we can see the logging out message. Delete when the call to the server is implemented.
-		await new Promise((res) => setTimeout(res, 1000));
 	};
-
 }

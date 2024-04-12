@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User, FakeData, Follow } from "tweeter-shared";
 import { DaoService } from "./DaoService";
 
 export class FollowService extends DaoService {
@@ -13,27 +13,23 @@ export class FollowService extends DaoService {
 		let follows: [string[], boolean];
 		let usersList: User[] = [];
 
+		this.checkAuthToken(authToken);
+		console.log('the last item', lastItem);
+
 		if (followees) {
 			follows = await this.followDao.getPageOfFollowees(user.alias, pageSize, lastItem?.alias);
+
 		}
 		else {
 			follows = await this.followDao.getPageOfFollowers(user.alias, pageSize, lastItem?.alias);
 		}
 
-		console.log('after running getPageOfFollowers', follows);
-
-		follows[0].forEach(async alias => {
-			console.log(alias);
+		for (const alias of follows[0]) {
 			let userToAdd: User | null | undefined = await this.userDao.getUser(alias);
-			console.log('user to add', userToAdd);
 			usersList.push(userToAdd!);
-		});
-
-		console.log('userlist', usersList);
-
+		}
 
 		return [usersList, follows[1]]
-
 	};
 
 	public async getIsFollowerStatus(
@@ -41,16 +37,21 @@ export class FollowService extends DaoService {
 		user: User,
 		selectedUser: User
 	): Promise<boolean> {
+		this.checkAuthToken(authToken);
 
-		// TODO: Replace with the result of calling server
-		return FakeData.instance.isFollower();
+		const isFollower = await this.followDao.getFollow(new Follow(user, selectedUser));
+
+		return isFollower;
 	};
 
 	public async getFolloweesCount(
 		authToken: AuthToken,
 		user: User
 	): Promise<number> {
-		// TODO: Replace with the result of calling server
+		this.checkAuthToken(authToken);
+
+		const count = await this.userDao.getFolloweesCount(user.alias);
+		console.log('followees count', count);
 		return FakeData.instance.getFolloweesCount(user);
 	};
 
@@ -58,7 +59,9 @@ export class FollowService extends DaoService {
 		authToken: AuthToken,
 		user: User
 	): Promise<number> {
-		// TODO: Replace with the result of calling server
+		this.checkAuthToken(authToken);
+		const count = await this.userDao.getFollowersCount(user.alias);
+
 		return FakeData.instance.getFollowersCount(user);
 	};
 
@@ -66,10 +69,13 @@ export class FollowService extends DaoService {
 		authToken: AuthToken,
 		userToFollow: User
 	): Promise<[followersCount: number, followeesCount: number]> {
+		this.checkAuthToken(authToken);
+
 		// Pause so we can see the following message. Remove when connected to the server
 		await new Promise((f) => setTimeout(f, 2000));
 
 		// TODO: Call the server
+		// await this.followDao.follow
 
 		let followersCount = await this.getFollowersCount(authToken, userToFollow);
 		let followeesCount = await this.getFolloweesCount(authToken, userToFollow);
@@ -81,6 +87,8 @@ export class FollowService extends DaoService {
 		authToken: AuthToken,
 		userToUnfollow: User
 	): Promise<[followersCount: number, followeesCount: number]> {
+		this.checkAuthToken(authToken);
+
 		// Pause so we can see the unfollowing message. Remove when connected to the server
 		await new Promise((f) => setTimeout(f, 2000));
 
@@ -91,4 +99,10 @@ export class FollowService extends DaoService {
 
 		return [followersCount, followeesCount];
 	};
+
+	public async checkAuthToken(authToken: AuthToken) {
+		if (!await this.authTokenDao.checkAuthToken(authToken)) {
+			throw new Error('Invalid auth token');
+		}
+	}
 }

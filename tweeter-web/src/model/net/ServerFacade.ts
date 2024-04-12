@@ -1,4 +1,22 @@
-import { LoginRequest, AuthenticateResponse, RegisterRequest, LogoutRequest, TweeterResponse, GetUserRequest, GetUserResponse, LoadMoreStatusItemsRequest, LoadMoreItemsResponse, LoadMoreFollowsRequest, LoadMoreFollowsResponse, PostStatusRequest, GetIsFollowerStatusRequest, GetIsFollowerStatusResponse, GetFolloweesCountRequest, GetFollowCountResponse, GetFollowersCountRequest, FollowRequest, UnfollowRequest } from "tweeter-shared";
+import {
+	LoginRequest,
+	AuthenticateResponse,
+	RegisterRequest,
+	LogoutRequest,
+	TweeterResponse,
+	GetUserRequest,
+	GetUserResponse,
+	LoadMoreStatusItemsRequest,
+	LoadMoreItemsResponse,
+	LoadMoreFollowsRequest,
+	LoadMoreFollowsResponse,
+	PostStatusRequest,
+	GetIsFollowerStatusRequest,
+	GetIsFollowerStatusResponse,
+	GetFollowCountResponse,
+	FollowRequest,
+	GetFollowsCountRequest
+} from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
 
@@ -78,16 +96,16 @@ export class ServerFacade {
 		return GetIsFollowerStatusResponse.fromJson(response);
 	}
 
-	async getFolloweesCount(request: GetFolloweesCountRequest): Promise<GetFollowCountResponse> {
+	async getFolloweesCount(request: GetFollowsCountRequest): Promise<GetFollowCountResponse> {
 		const endpoint = "get/followeescount";
-		const response: JSON = await this.clientCommunicator.doPost<GetFolloweesCountRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<GetFollowsCountRequest>(request, endpoint);
 
 		return GetFollowCountResponse.fromJson(response);
 	}
 
-	async getFollowersCount(request: GetFollowersCountRequest): Promise<GetFollowCountResponse> {
+	async getFollowersCount(request: GetFollowsCountRequest): Promise<GetFollowCountResponse> {
 		const endpoint = "get/followerscount";
-		const response: JSON = await this.clientCommunicator.doPost<GetFollowersCountRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<GetFollowsCountRequest>(request, endpoint);
 
 		return GetFollowCountResponse.fromJson(response);
 	}
@@ -99,9 +117,9 @@ export class ServerFacade {
 		return TweeterResponse.fromJson(response);
 	}
 
-	async unfollow(request: UnfollowRequest): Promise<TweeterResponse> {
+	async unfollow(request: FollowRequest): Promise<TweeterResponse> {
 		const endpoint = "unfollow";
-		const response: JSON = await this.clientCommunicator.doPost<UnfollowRequest>(request, endpoint);
+		const response: JSON = await this.clientCommunicator.doPost<FollowRequest>(request, endpoint);
 
 		return TweeterResponse.fromJson(response);
 	}

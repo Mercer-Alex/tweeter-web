@@ -46,14 +46,13 @@ export default class AuthDao extends BaseDao implements AuthDaoInterface {
 		if (output === undefined) {
 			return false;
 		}
-
 		let hash = CryptoJS.SHA256(password);
 		let hashString = hash.toString(CryptoJS.enc.Hex);
 
-		if (output.Item!.password) {
+		if (output.Item?.password == hashString) {
 			return true;
 		} else {
-			return false;
+			throw new Error("Incorrect password");
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { AuthToken, User, Status, PostStatusRequest } from "tweeter-shared";
+import { AuthToken, User, Status } from "tweeter-shared";
 import { DaoService } from "./DaoService";
 
 export class StatusService extends DaoService {
@@ -9,7 +9,9 @@ export class StatusService extends DaoService {
 		lastItem: Status | null,
 		story: boolean
 	): Promise<[Status[], boolean]> {
-		//TODO: check that authtoken is valid
+		if (!await this.authTokenDao.checkAuthToken(authToken)) {
+			throw new Error('Invalid auth token');
+		}
 		if (story) {
 			let followers: [Status[], boolean] = await this.storyDao.getPageofStatuses(user.alias, pageSize, lastItem);
 			return [followers[0], followers[1]];
@@ -22,8 +24,6 @@ export class StatusService extends DaoService {
 
 
 	public async postStatus(newStatus: Status): Promise<void> {
-		// await new Promise((f) => setTimeout(f, 2000));
-
 		await this.storyDao.putStatus(newStatus);
 
 		await this.feedDao.putStatus(newStatus);

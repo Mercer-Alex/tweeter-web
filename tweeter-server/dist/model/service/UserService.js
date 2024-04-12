@@ -15,6 +15,9 @@ const DaoService_1 = require("./DaoService");
 class UserService extends DaoService_1.DaoService {
     getUser(authToken, alias) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.authTokenDao.checkAuthToken(authToken))) {
+                throw new Error('Invalid auth token');
+            }
             const getUser = yield this.userDao.getUser(alias);
             return getUser;
         });
@@ -23,7 +26,6 @@ class UserService extends DaoService_1.DaoService {
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const authenticate = yield this.authDao.authenticate(username, password);
-            console.log(authenticate);
             if (authenticate) {
                 const user = yield this.userDao.getUser(username);
                 if (user === undefined) {
@@ -37,13 +39,13 @@ class UserService extends DaoService_1.DaoService {
         });
     }
     ;
-    register(firstName, lastName, alias, password, userImageBytes) {
+    register(username, password, firstName, lastName, userImageBytes) {
         return __awaiter(this, void 0, void 0, function* () {
-            let imageStringBase64 = Buffer.from(userImageBytes).toString("base64");
-            const imageUrl = yield this.s3Dao.putImage(alias, imageStringBase64);
+            const imageUrl = yield this.s3Dao.putImage(username, userImageBytes);
             const authToken = tweeter_shared_1.AuthToken.Generate();
-            yield this.authTokenDao.putAuthToken(authToken, alias);
-            const user = new tweeter_shared_1.User(firstName, lastName, alias, imageUrl);
+            yield this.authTokenDao.putAuthToken(authToken, username);
+            yield this.authDao.putAuthentication(username, password);
+            const user = new tweeter_shared_1.User(firstName, lastName, username, imageUrl);
             yield this.userDao.putUser(user, password);
             if (user === null) {
                 throw new Error("Invalid registration");
@@ -54,8 +56,7 @@ class UserService extends DaoService_1.DaoService {
     ;
     logout(authToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-            yield new Promise((res) => setTimeout(res, 1000));
+            yield this.authTokenDao.deleteAuthToken(authToken);
         });
     }
     ;

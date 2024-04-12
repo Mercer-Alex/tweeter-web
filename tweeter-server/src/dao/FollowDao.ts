@@ -2,14 +2,13 @@ import { Follow, User } from "tweeter-shared";
 import { FollowDaoInterface } from "./DaoInterface";
 import {
 	DeleteCommand,
-	DynamoDBDocumentClient,
 	GetCommand,
 	PutCommand,
 	QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import BaseDao from "./BaseDao";
 
-export default class FollowDao implements FollowDaoInterface {
+export default class FollowDao extends BaseDao implements FollowDaoInterface {
 	readonly tableName: string = "follows";
 	readonly indexName: string = "follows_index";
 	readonly followee_handleAttr: string = "followee_handle";
@@ -17,33 +16,36 @@ export default class FollowDao implements FollowDaoInterface {
 	readonly follower_handleAttr: string = "follower_handle";
 	readonly follower_nameAttr: string = "follower_name";
 
-	private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-
-	async getPageOfFollowees(followerHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[User[], boolean]> {
+	async getPageOfFollowees(followerHandle: string, pageSize: number, lastFolloweeHandle: string | undefined): Promise<[string[], boolean]> {
 		const params = {
 			TableName: this.tableName,
-			KeyConditionExpression: 'follower_handle = :follower_handle',
+			IndexName: "follows_index",
+			KeyConditionExpression: 'followee_handle = :followee_handle',
 			ExpressionAttributeValues: {
-				':follower_handle': followerHandle,
+				':followee_handle': followerHandle,
 			},
 			Limit: pageSize,
-			ExclusiveStartKey: lastFolloweeHandle
-				? { [this.follower_handleAttr]: followerHandle, [this.followee_handleAttr]: lastFolloweeHandle }
-				: undefined,
+			ExclusiveStartKey:
+				lastFolloweeHandle
+					? { [this.follower_handleAttr]: followerHandle, [this.followee_handleAttr]: lastFolloweeHandle }
+					: undefined,
 		};
 
-		const items: User[] = [];
+		const items: string[] = [];
 		const data = await this.client.send(new QueryCommand(params));
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
+		console.log('followees data', data.Items);
+
 		data.Items?.forEach((item) =>
-			items.push(User.fromJson(item[this.followee_handleAttr])!)
+			items.push(item[this.follower_handleAttr])!
 		);
+
 
 		return [items, hasMorePages]
 	}
-	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[User[], boolean]> {
+	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]> {
 		const params = {
 			TableName: this.tableName,
 			IndexName: "follows_index",
@@ -58,14 +60,20 @@ export default class FollowDao implements FollowDaoInterface {
 					: undefined,
 		};
 
-		const items: User[] = [];
+		console.log("the params", params);
+
 		const data = await this.client.send(new QueryCommand(params));
+		const items: string[] = [];
 
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
+		console.log('followees data', data.Items);
+
 		data.Items?.forEach((item) =>
-			items.push(User.fromJson(item[this.follower_handleAttr])!)
+			items.push(item[this.follower_handleAttr])!
 		);
+
+		console.log('the data', data.Items)
 
 		return [items, hasMorePages];
 	}

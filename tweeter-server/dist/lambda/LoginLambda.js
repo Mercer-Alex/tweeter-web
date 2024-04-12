@@ -14,8 +14,11 @@ const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 const handler = (event) => __awaiter(void 0, void 0, void 0, function* () {
     let response;
+    console.log('before request,', event);
+    let request = tweeter_shared_1.LoginRequest.fromJson(event);
+    console.log('in handler', request);
     try {
-        response = new tweeter_shared_1.AuthenticateResponse(true, ...(yield new UserService_1.UserService().login(event._username, event.password)), null);
+        response = new tweeter_shared_1.AuthenticateResponse(true, ...(yield new UserService_1.UserService().login(request.username, request.password)), null);
     }
     catch (error) {
         throw new Error(`[Error] ${error}.message`);

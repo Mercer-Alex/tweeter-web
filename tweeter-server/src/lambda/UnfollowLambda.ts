@@ -1,11 +1,11 @@
-import { UnfollowRequest, TweeterResponse } from "tweeter-shared";
+import { FollowRequest, TweeterResponse } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
 
-export const handler = async (event: UnfollowRequest): Promise<TweeterResponse> => {
+export const handler = async (event: FollowRequest): Promise<TweeterResponse> => {
 	let response: TweeterResponse;
 
-	let request: UnfollowRequest = UnfollowRequest.fromJson(event);
+	let request: FollowRequest = FollowRequest.fromJson(event);
 
 	try {
 		await new FollowService().unfollow(request._authToken!, request.user)

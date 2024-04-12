@@ -14,10 +14,8 @@ export { LoadMoreStatusItemsRequest } from "./model/net/Request";
 export { LoadMoreFollowsRequest } from "./model/net/Request";
 export { PostStatusRequest } from "./model/net/Request";
 export { GetIsFollowerStatusRequest } from "./model/net/Request";
-export { GetFolloweesCountRequest } from "./model/net/Request";
-export { GetFollowersCountRequest } from "./model/net/Request";
+export { GetFollowsCountRequest } from "./model/net/Request";
 export { FollowRequest } from "./model/net/Request";
-export { UnfollowRequest } from "./model/net/Request";
 
 export { TweeterRequest } from "./model/net/Request";
 export { AuthenticateResponse } from "./model/net/Response";

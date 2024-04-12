@@ -16,7 +16,7 @@ export class TweeterRequest {
 
 		let deserializedUsername = '';
 		if (json._username!) {
-			deserializedUsername = User.fromJson(JSON.stringify(json._username))?._alias!
+			deserializedUsername = json._username;
 		}
 
 		return new TweeterRequest(
@@ -42,8 +42,8 @@ export class LoginRequest extends TweeterRequest {
 	}
 
 	static fromJson(json: LoginRequest): LoginRequest {
-		let deserializedUsername: string = User.fromJson(JSON.stringify(json._username))?.alias!;
-		let deserializedPassword: string = JSON.stringify(json.password);;
+		let deserializedUsername: string = json._username;
+		let deserializedPassword: string = json.password;
 
 		return new LoginRequest(
 			deserializedUsername,
@@ -86,11 +86,11 @@ export class RegisterRequest extends LoginRequest {
 	}
 
 	static fromJson(json: RegisterRequest): RegisterRequest {
-		let deserializedUsername: string = User.fromJson(JSON.stringify(json._username))?.alias!;
-		let deserializedPassword: string = JSON.stringify(json.password);;
-		let deserializedFirstName = User.fromJson(JSON.stringify(json.firstName))?.firstName!;
-		let deserializedLastName: string = User.fromJson(JSON.stringify(json.lastName))?.lastName!;
-		let deserializedImage: string = User.fromJson(JSON.stringify(json.image))?.imageUrl!;
+		let deserializedUsername: string = json._username;
+		let deserializedPassword: string = json.password;
+		let deserializedFirstName = json.firstName;
+		let deserializedLastName: string = json.lastName;
+		let deserializedImage: string = json.image;
 
 		return new RegisterRequest(
 			deserializedUsername,
@@ -110,7 +110,7 @@ export class GetUserRequest extends TweeterRequest {
 
 	static fromJson(json: GetUserRequest): GetUserRequest {
 		let deserializedAuth = AuthToken.fromJson(JSON.stringify(json._authToken));
-		let deserializedUsername = User.fromJson(JSON.stringify(json._username))?._alias;
+		let deserializedUsername = json._username;
 
 		return new GetUserRequest(
 			deserializedAuth!,
@@ -224,7 +224,6 @@ export class GetIsFollowerStatusRequest extends TweeterRequest {
 		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 		let deserializedSelectedUser: User = User.fromJson(JSON.stringify(json.selectedUser))!;
 
-
 		return new GetIsFollowerStatusRequest(
 			deserializedAuth,
 			deserializedUser,
@@ -233,7 +232,7 @@ export class GetIsFollowerStatusRequest extends TweeterRequest {
 	}
 }
 
-export class GetFolloweesCountRequest extends TweeterRequest {
+export class GetFollowsCountRequest extends TweeterRequest {
 	public user: User;
 
 	constructor(authToken: AuthToken, user: User) {
@@ -241,17 +240,16 @@ export class GetFolloweesCountRequest extends TweeterRequest {
 		this.user = user;
 	}
 
-	static fromJson(json: GetFolloweesCountRequest): GetFolloweesCountRequest {
+	static fromJson(json: GetFollowsCountRequest): GetFollowsCountRequest {
 		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
 		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 
-		return new GetFolloweesCountRequest(
+		return new GetFollowsCountRequest(
 			deserializedAuth,
 			deserializedUser,
 		);
 	}
 }
-
 
 export class FollowRequest extends TweeterRequest {
 	public user: User;
@@ -265,48 +263,9 @@ export class FollowRequest extends TweeterRequest {
 		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
 		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
 
-		return new GetFolloweesCountRequest(
+		return new FollowRequest(
 			deserializedAuth,
 			deserializedUser,
 		);
 	}
 }
-
-export class UnfollowRequest extends TweeterRequest {
-	public user: User;
-
-	constructor(authToken: AuthToken, user: User) {
-		super(user.alias, authToken);
-		this.user = user;
-	}
-
-	static fromJson(json: UnfollowRequest): UnfollowRequest {
-		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
-		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
-
-		return new GetFolloweesCountRequest(
-			deserializedAuth,
-			deserializedUser,
-		);
-	}
-}
-
-export class GetFollowersCountRequest extends TweeterRequest {
-	public user: User;
-
-	constructor(authToken: AuthToken, user: User) {
-		super(user.alias, authToken);
-		this.user = user;
-	}
-
-	static fromJson(json: GetFolloweesCountRequest): GetFolloweesCountRequest {
-		let deserializedAuth: AuthToken = AuthToken.fromJson(JSON.stringify(json._authToken))!;
-		let deserializedUser: User = User.fromJson(JSON.stringify(json.user))!;
-
-		return new GetFolloweesCountRequest(
-			deserializedAuth,
-			deserializedUser,
-		);
-	}
-}
-

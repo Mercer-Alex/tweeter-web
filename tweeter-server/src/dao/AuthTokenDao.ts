@@ -31,7 +31,6 @@ export default class AuthTokenDao extends BaseDao implements AuthTokenDaoInterfa
 			TableName: this.tableName,
 			Key: { [this.auth_tokenAttr]: authToken._token },
 		};
-		console.log("deleteAuth", params);
 
 		await this.client.send(new DeleteCommand(params));
 	}
@@ -50,7 +49,7 @@ export default class AuthTokenDao extends BaseDao implements AuthTokenDaoInterfa
 
 		const curr_time = Date.now();
 		const minutesElapsed = (curr_time - output.Item!.timestamp) / 60000;
-		// console.log(minutesElapsed);
+
 		authToken.timestamp = curr_time;
 
 		if (minutesElapsed < 60) {

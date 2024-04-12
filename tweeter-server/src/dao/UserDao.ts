@@ -74,7 +74,6 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 			TableName: this.tableName,
 			Key: { [this.usernameAttr]: username },
 		};
-
 		const output = await this.client.send(new GetCommand(params));
 
 		return output.Item == undefined
