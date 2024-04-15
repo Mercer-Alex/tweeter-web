@@ -8,31 +8,40 @@ import {
 import BaseDao from "./BaseDao";
 
 export default class FeedDao extends BaseDao implements StatusDaoInterface {
-	readonly tableName = "feed";
-	readonly indexNam = "feed_index";
+	readonly tableName = "feed2";
+
 	readonly author_handleAttr: string = "author_handle";
 	readonly postAttr = "post";
 	readonly time_stampAttr = "time_stamp";
+	readonly follower_handleAttr: string = "follower_handle";
 
-	async getPageofStatuses(username: string, pageSize: number, lastItem: Status | null): Promise<[Status[], boolean]> {
+	async getPageofStatuses(username: string, pageSize: number, lastItem: Status | null): Promise<[any[], boolean]> {
 		const params = {
 			TableName: this.tableName,
-			KeyConditionExpression: 'author_handle = :author_handle',
+			KeyConditionExpression: this.follower_handleAttr + ' = :follower_handle',
 			ExpressionAttributeValues: {
-				':author_handle': username,
+				':follower_handle': username,
 			},
 			Limit: pageSize,
+			ScanIndexForward: false,
+			ExclusiveStartKey:
+				lastItem
+					? { [this.follower_handleAttr]: username, [this.time_stampAttr]: lastItem.timestamp }
+					: undefined,
 		}
-		const items: Status[] = [];
+		console.log('last item', lastItem);
+		console.log('feed params', params);
+		let items: any[] = [];
 		const data = await this.client.send(new QueryCommand(params));
-		const hasMorePages = data.LastEvaluatedKey !== undefined;
+		console.log('get page feed', data);
 
-		data.Items?.forEach((item) =>
-			items.push(Status.fromJson(this.postAttr)!)
-		);
+		const hasMorePages = data.LastEvaluatedKey !== undefined;
+		items = data.Items!;
+
 
 		return [items, hasMorePages]
 	}
+
 	async getStatus(status: Status, username: string): Promise<Status | undefined> {
 		const params = {
 			TableName: this.tableName,
@@ -48,15 +57,16 @@ export default class FeedDao extends BaseDao implements StatusDaoInterface {
 			: Status.fromJson(output.Item[this.postAttr])!;
 	}
 
-	async putStatus(status: Status): Promise<void> {
-		let time = new Date(status._timestamp).toDateString();
+	async putStatus(status: Status, authorUserName: string, followerUserName?: string): Promise<void> {
+		let time = status._timestamp;
 
 		const params = {
 			TableName: this.tableName,
 			Item: {
-				[this.postAttr]: status._post,
+				[this.postAttr]: status.post,
 				[this.time_stampAttr]: time,
-				[this.author_handleAttr]: status._user._alias,
+				[this.author_handleAttr]: authorUserName,
+				[this.follower_handleAttr]: followerUserName,
 			},
 		};
 		await this.client.send(new PutCommand(params));

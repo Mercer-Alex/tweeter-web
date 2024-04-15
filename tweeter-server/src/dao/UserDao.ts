@@ -53,8 +53,10 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 			Key: { [this.usernameAttr]: username },
 		};
 
-		const output = await this.client.send(new GetCommand(params));
+		console.log('followers params', params)
 
+		const output = await this.client.send(new GetCommand(params));
+		console.log('followers output', output)
 		return output.Item?.followers;
 	}
 
@@ -64,7 +66,10 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 			Key: { [this.usernameAttr]: username },
 		};
 
+		console.log('followees params', params)
+
 		const output = await this.client.send(new GetCommand(params));
+		console.log('followees output', output)
 
 		return output.Item?.followees;
 	}
@@ -119,5 +124,24 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 		};
 
 		await this.client.send(new DeleteCommand(params));
+	}
+
+	async authenticate(username: string, password: string): Promise<boolean> {
+		const params = {
+			TableName: this.tableName,
+			Key: { [this.usernameAttr]: username },
+		};
+		const output = await this.client.send(new GetCommand(params));
+		if (output === undefined) {
+			return false;
+		}
+		let hash = CryptoJS.SHA256(password);
+		let hashString = hash.toString(CryptoJS.enc.Hex);
+
+		if (output.Item?.password == hashString) {
+			return true;
+		} else {
+			throw new Error("Incorrect password");
+		}
 	}
 }

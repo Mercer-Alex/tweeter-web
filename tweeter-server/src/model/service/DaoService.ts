@@ -6,6 +6,7 @@ import S3Dao from "../../dao/S3Dao";
 import FollowDao from "../../dao/FollowDao";
 import StoryDao from "../../dao/StoryDao";
 import FeedDao from "../../dao/FeedDao";
+import { AuthToken } from "tweeter-shared";
 
 export class DaoService {
 	private _dao: DaoFactory | null = null;
@@ -60,5 +61,16 @@ export class DaoService {
 
 	get storyDao(): StoryDao {
 		return this._storyDao;
+	}
+
+	public async checkAuthToken(authToken: AuthToken): Promise<[AuthToken, string]> {
+		console.log('checking token', authToken);
+		const response: [AuthToken, string] | [undefined, undefined] = await this.authTokenDao.checkAuthToken(authToken);
+		console.log('response from token check', response);
+		if (response[0] == undefined || response[1] == undefined) {
+			throw new Error('Invalid auth token');
+		}
+
+		return [response[0], response[1]];
 	}
 }

@@ -27,6 +27,7 @@ export class StatusService {
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
     const response = await this.serverFacade.loadMoreStoryItems(new LoadMoreStatusItemsRequest(authToken, user, pageSize, lastItem));
+    console.log('logging', response);
     return [response.itemsList, response.hasMoreItems];
   };
 

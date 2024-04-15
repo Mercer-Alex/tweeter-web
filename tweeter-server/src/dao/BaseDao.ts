@@ -3,6 +3,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export default class BaseDao {
 	protected readonly client = DynamoDBDocumentClient.from(
-		new DynamoDBClient()
+		new DynamoDBClient({ region: "us-east-1" },)
 	);
 }

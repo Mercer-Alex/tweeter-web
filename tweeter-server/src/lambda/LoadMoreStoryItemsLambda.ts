@@ -6,6 +6,7 @@ export const handler = async (event: LoadMoreStatusItemsRequest): Promise<LoadMo
 	let response: LoadMoreItemsResponse;
 	console.log('in the handler', event);
 	let request: LoadMoreStatusItemsRequest = LoadMoreStatusItemsRequest.fromJson(event);
+	console.log('after request', request);
 
 	try {
 		response = new LoadMoreItemsResponse(

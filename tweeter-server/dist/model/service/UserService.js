@@ -35,7 +35,7 @@ class UserService extends DaoService_1.DaoService {
                 yield this.authTokenDao.putAuthToken(authToken, username);
                 return [user, authToken];
             }
-            throw new Error("Could not authenticate");
+            throw new Error("Could not login");
         });
     }
     ;

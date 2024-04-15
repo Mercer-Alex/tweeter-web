@@ -5,8 +5,10 @@ import { FollowService } from "../model/service/FollowService";
 export const handler = async (event: FollowRequest): Promise<TweeterResponse> => {
 	let response: TweeterResponse;
 
+	let request: FollowRequest = FollowRequest.fromJson(event);
+
 	try {
-		await new FollowService().follow(event._authToken!, event.user);
+		await new FollowService().follow(request._authToken!, request.user);
 		response = new TweeterResponse(true);
 	} catch (error) {
 		throw new Error(`[Error] ${error}`);

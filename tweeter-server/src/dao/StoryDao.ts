@@ -15,8 +15,7 @@ export default class StoryDao extends BaseDao implements StatusDaoInterface {
 	readonly time_stampAttr = "time_stamp";
 
 
-	async getPageofStatuses(username: string, pageSize: number, lastStatus: Status | null): Promise<[Status[], boolean]> {
-		console.log('page of statuses', username);
+	async getPageofStatuses(username: string, pageSize: number, lastStatus: Status | null): Promise<[any[], boolean]> {
 		const params = {
 			TableName: this.tableName,
 			KeyConditionExpression: 'author_handle = :author_handle',
@@ -24,16 +23,16 @@ export default class StoryDao extends BaseDao implements StatusDaoInterface {
 				':author_handle': username,
 			},
 			Limit: pageSize,
+			ScanIndexForward: false,
 			ExclusiveStartKey: (lastStatus != null)
 				? { [this.author_handleAttr]: username, [this.time_stampAttr]: lastStatus._timestamp }
 				: undefined
 		}
 
 		const data = await this.client.send(new QueryCommand(params));
-		const items: Status[] = data.Items as Status[];
-		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
-		console.log('story data', data);
+		const items: any[] = data.Items!;
+		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
 		return [items, hasMorePages]
 	}
@@ -54,7 +53,7 @@ export default class StoryDao extends BaseDao implements StatusDaoInterface {
 	}
 
 	async putStatus(status: Status): Promise<void> {
-		let time = new Date(status._timestamp).toDateString();
+		let time = status._timestamp;
 		const params = {
 			TableName: this.tableName,
 			Item: {

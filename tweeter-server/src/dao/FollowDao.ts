@@ -41,15 +41,14 @@ export default class FollowDao extends BaseDao implements FollowDaoInterface {
 		data.Items?.forEach((item) =>
 			items.push(item[this.follower_handleAttr])!
 		);
-
-
 		return [items, hasMorePages]
 	}
+
 	async getPageOfFollowers(followeeHandle: string, pageSize: number, lastFollowerHandle: string | undefined): Promise<[string[], boolean]> {
 		const params = {
 			TableName: this.tableName,
 			IndexName: "follows_index",
-			KeyConditionExpression: 'followee_handle = :followee_handle',
+			KeyConditionExpression: this.followee_handleAttr + ' = :followee_handle',
 			ExpressionAttributeValues: {
 				':followee_handle': followeeHandle,
 			},
@@ -59,23 +58,39 @@ export default class FollowDao extends BaseDao implements FollowDaoInterface {
 					? { [this.followee_handleAttr]: followeeHandle, [this.follower_handleAttr]: lastFollowerHandle }
 					: undefined,
 		};
-
-		console.log("the params", params);
-
+		console.log('last follower', lastFollowerHandle);
 		const data = await this.client.send(new QueryCommand(params));
 		const items: string[] = [];
-
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
-
-		console.log('followees data', data.Items);
 
 		data.Items?.forEach((item) =>
 			items.push(item[this.follower_handleAttr])!
 		);
 
-		console.log('the data', data.Items)
-
 		return [items, hasMorePages];
+	}
+
+	async getFollowers(followerHandle: string): Promise<string[]> {
+		const params = {
+			TableName: this.tableName,
+			IndexName: "follows_index",
+			KeyConditionExpression: 'followee_handle = :followee_handle',
+			ExpressionAttributeValues: {
+				':followee_handle': followerHandle,
+			},
+		};
+
+		const items: string[] = [];
+		const data = await this.client.send(new QueryCommand(params));
+
+		console.log('followers aliases?', data.Items);
+
+		data.Items?.forEach((item) =>
+			items.push(item[this.follower_handleAttr])!
+		);
+
+		return items;
+
 	}
 
 	async putFollow(follows: Follow): Promise<void> {

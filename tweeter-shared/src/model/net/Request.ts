@@ -197,7 +197,7 @@ export class LoadMoreFollowsRequest extends TweeterRequest {
 		let deserializedLastItem: User | null = null;
 
 		if (json.lastItem != null) {
-			deserializedLastItem = User.fromJson(JSON.stringify(json.user));
+			deserializedLastItem = User.fromJson(JSON.stringify(json.lastItem));
 		}
 
 		return new LoadMoreFollowsRequest(

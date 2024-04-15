@@ -48,19 +48,23 @@ class Main {
 		// for (let i = 0; i < 25; i++) {
 		// 	const user = new User("First" + i, "Last" + i, "@username" + i, image);
 		// 	const status = new Status("hello, there, I'm " + "@username" + i, user, Date.now())
-		// 	await feedDao.putStatus(status);
+		// 	await feedDao.putStatus(status, "@username" + i, "@alex");
 		// }
 
 		/* Put followers */
 		// for (let i = 0; i < 25; i++) {
-		// 	const followee = new User("First" + i, "Last" + i, "@username" + i, imageString);
-		// 	await followDao.putFollow(new Follow(follower, followee));
+		// const followee = new User("First" + i, "Last" + i, "@username" + i, imageString);
+		// await followDao.putFollow(new Follow(follower, followee));
+
+		// await userDao.updateFolloweesCount("@username" + i, 1)
 		// }
 
 		/* Put follows */
 		// for (let i = 0; i < 25; i++) {
 		// 	const followee = new User("First" + i, "Last" + i, "@username" + i, imageString);
 		// 	await followDao.putFollow(new Follow(followee, follower));
+		// 	await userDao.updateFollowersCount("@username" + i, 1)
+		// 	await userDao.updateFolloweesCount("@alex", 1)
 		// }
 
 		// await userDao.putUser(follower, "password");

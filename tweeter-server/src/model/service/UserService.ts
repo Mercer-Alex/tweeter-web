@@ -1,6 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
 import { DaoService } from "./DaoService";
-
 export class UserService extends DaoService {
 
 	public async getUser(
@@ -28,12 +27,12 @@ export class UserService extends DaoService {
 				throw new Error("User is undefined, invalid username");
 			}
 			const authToken = AuthToken.Generate();
-			await this.authTokenDao.putAuthToken(authToken, username);
 
+			await this.authTokenDao.putAuthToken(authToken, username);
 			return [user!, authToken];
 		}
 
-		throw new Error("Could not authenticate");
+		throw new Error("Could not login");
 	};
 
 	public async register(
@@ -43,12 +42,11 @@ export class UserService extends DaoService {
 		lastName: string,
 		userImageBytes: string
 	): Promise<[User, AuthToken]> {
-
 		const imageUrl = await this.s3Dao.putImage(username, userImageBytes);
 
 		const authToken = AuthToken.Generate();
-		await this.authTokenDao.putAuthToken(authToken, username);
 
+		await this.authTokenDao.putAuthToken(authToken, username);
 		await this.authDao.putAuthentication(username, password);
 
 		const user = new User(firstName, lastName, username, imageUrl);

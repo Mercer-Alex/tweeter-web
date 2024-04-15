@@ -4,9 +4,10 @@ import { FollowService } from "../model/service/FollowService";
 
 export const handler = async (event: FollowRequest): Promise<TweeterResponse> => {
 	let response: TweeterResponse;
+	console.log('unfollow event', event);
 
 	let request: FollowRequest = FollowRequest.fromJson(event);
-
+	console.log('unfollow request', request);
 	try {
 		await new FollowService().unfollow(request._authToken!, request.user)
 		response = new TweeterResponse(true);

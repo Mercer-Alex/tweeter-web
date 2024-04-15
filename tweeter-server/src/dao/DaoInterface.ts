@@ -34,7 +34,7 @@ export interface S3DaoInterface {
 }
 
 export interface StatusDaoInterface {
-	getPageofStatuses(username: string, pageSize: number, lastItem: Status | null): Promise<[Status[], boolean]>;
+	getPageofStatuses(username: string, pageSize: number, lastItem: Status | null): Promise<[any[], boolean]>;
 	getStatus(status: Status, username: string): Promise<Status | undefined>;
 	putStatus(status: Status, username: string): Promise<void>;
 }

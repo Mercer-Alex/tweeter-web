@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData, Follow } from "tweeter-shared";
+import { AuthToken, User, Follow } from "tweeter-shared";
 import { DaoService } from "./DaoService";
 
 export class FollowService extends DaoService {
@@ -13,12 +13,11 @@ export class FollowService extends DaoService {
 		let follows: [string[], boolean];
 		let usersList: User[] = [];
 
-		this.checkAuthToken(authToken);
+		await this.checkAuthToken(authToken);
 		console.log('the last item', lastItem);
 
 		if (followees) {
 			follows = await this.followDao.getPageOfFollowees(user.alias, pageSize, lastItem?.alias);
-
 		}
 		else {
 			follows = await this.followDao.getPageOfFollowers(user.alias, pageSize, lastItem?.alias);
@@ -37,48 +36,62 @@ export class FollowService extends DaoService {
 		user: User,
 		selectedUser: User
 	): Promise<boolean> {
-		this.checkAuthToken(authToken);
+		await this.checkAuthToken(authToken);
 
 		const isFollower = await this.followDao.getFollow(new Follow(user, selectedUser));
+		console.log('is follower status', isFollower);
 
 		return isFollower;
 	};
 
 	public async getFolloweesCount(
 		authToken: AuthToken,
-		user: User
+		username: string
 	): Promise<number> {
-		this.checkAuthToken(authToken);
+		await this.checkAuthToken(authToken);
+		console.log('followees user', username);
 
-		const count = await this.userDao.getFolloweesCount(user.alias);
+		let count = await this.userDao.getFolloweesCount(username);
 		console.log('followees count', count);
-		return FakeData.instance.getFolloweesCount(user);
+
+		if (count == null || count == undefined) {
+			count = 0;
+		}
+		return count;
 	};
 
 	public async getFollowersCount(
 		authToken: AuthToken,
-		user: User
+		username: string
 	): Promise<number> {
-		this.checkAuthToken(authToken);
-		const count = await this.userDao.getFollowersCount(user.alias);
+		let authResponse = await this.checkAuthToken(authToken);
+		console.log('followers user', username);
+		console.log('auth response', authResponse);
 
-		return FakeData.instance.getFollowersCount(user);
+		let count = await this.userDao.getFollowersCount(username);
+		console.log('followers count', count);
+		if (count == null || count == undefined) {
+			count = 0;
+		}
+
+		return count;
 	};
 
 	public async follow(
 		authToken: AuthToken,
 		userToFollow: User
 	): Promise<[followersCount: number, followeesCount: number]> {
-		this.checkAuthToken(authToken);
+		const authResponse = await this.checkAuthToken(authToken);
+		console.log('auth response from follow', authResponse);
 
-		// Pause so we can see the following message. Remove when connected to the server
-		await new Promise((f) => setTimeout(f, 2000));
+		const user = await this.userDao.getUser(authResponse[1]);
+		await this.followDao.putFollow(new Follow(user!, userToFollow))
+		await this.userDao.updateFolloweesCount(userToFollow._alias, 1);
+		await this.userDao.updateFollowersCount(user?.alias!, -1);
 
-		// TODO: Call the server
-		// await this.followDao.follow
 
-		let followersCount = await this.getFollowersCount(authToken, userToFollow);
-		let followeesCount = await this.getFolloweesCount(authToken, userToFollow);
+		let followersCount = await this.getFollowersCount(authToken, userToFollow._alias);
+		let followeesCount = await this.getFolloweesCount(authToken, userToFollow._alias);
 
 		return [followersCount, followeesCount];
 	};
@@ -87,22 +100,18 @@ export class FollowService extends DaoService {
 		authToken: AuthToken,
 		userToUnfollow: User
 	): Promise<[followersCount: number, followeesCount: number]> {
-		this.checkAuthToken(authToken);
+		const authResponse = await this.checkAuthToken(authToken);
+		console.log('auth response from unfollow', authResponse);
 
-		// Pause so we can see the unfollowing message. Remove when connected to the server
-		await new Promise((f) => setTimeout(f, 2000));
+		const user = await this.userDao.getUser(authResponse[1]);
+		await this.followDao.putFollow(new Follow(user!, userToUnfollow))
+		await this.userDao.updateFolloweesCount(userToUnfollow._alias, -1);
+		await this.userDao.updateFollowersCount(user?.alias!, -1);
 
-		// TODO: Call the server
 
-		let followersCount = await this.getFollowersCount(authToken, userToUnfollow);
-		let followeesCount = await this.getFolloweesCount(authToken, userToUnfollow);
+		let followersCount = await this.getFollowersCount(authToken, userToUnfollow._alias);
+		let followeesCount = await this.getFolloweesCount(authToken, userToUnfollow._alias);
 
 		return [followersCount, followeesCount];
 	};
-
-	public async checkAuthToken(authToken: AuthToken) {
-		if (!await this.authTokenDao.checkAuthToken(authToken)) {
-			throw new Error('Invalid auth token');
-		}
-	}
 }
