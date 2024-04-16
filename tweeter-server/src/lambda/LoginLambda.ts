@@ -3,11 +3,8 @@ import { UserService } from "../model/service/UserService";
 
 export const handler = async (event: LoginRequest): Promise<AuthenticateResponse> => {
 	let response: AuthenticateResponse;
-	console.log('before request,', event);
 
 	let request: LoginRequest = LoginRequest.fromJson(event);
-
-	console.log('in handler', request);
 
 	try {
 		response = new AuthenticateResponse(

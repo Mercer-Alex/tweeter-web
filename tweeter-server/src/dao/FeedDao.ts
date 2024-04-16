@@ -32,11 +32,9 @@ export default class FeedDao extends BaseDao implements StatusDaoInterface {
 					? { [this.follower_handleAttr]: username, [this.time_stampAttr]: lastItem.timestamp }
 					: undefined,
 		}
-		console.log('last item', lastItem);
-		console.log('feed params', params);
+
 		let items: any[] = [];
 		const data = await this.client.send(new QueryCommand(params));
-		console.log('get page feed', data);
 
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
 		items = data.Items!;
@@ -62,7 +60,6 @@ export default class FeedDao extends BaseDao implements StatusDaoInterface {
 
 	async putStatus(status: Status, authorUserName: string, followerUserName?: string): Promise<void> {
 		let time = status._timestamp;
-		console.log("dao status", status)
 
 		const params = {
 			TableName: this.tableName,
@@ -121,7 +118,6 @@ export default class FeedDao extends BaseDao implements StatusDaoInterface {
 		; if (resp.UnprocessedItems != undefined) {
 			let sec = 0.03;
 			if (Object.keys(resp.UnprocessedItems).length > 0) {
-				console.log(Object.keys(resp.UnprocessedItems[this.tableName]).length + ' unprocessed items');
 				//The ts-ignore with an @ in front must be as a comment in order to ignore an error for the next line for compiling. 
 				// @ts-ignore 
 				params.RequestItems = resp.UnprocessedItems;
@@ -135,7 +131,7 @@ export default class FeedDao extends BaseDao implements StatusDaoInterface {
 							await this.putUnprocessedItems(innerResp, params, attempts)
 						}
 					}).catch(err => {
-						console.log('error while batch writing unprocessed items ' + err);
+						throw new Error('error while batch writing unprocessed items ' + err);
 					});
 
 			}

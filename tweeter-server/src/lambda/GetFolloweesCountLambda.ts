@@ -3,10 +3,8 @@ import { FollowService } from "../model/service/FollowService";
 
 export const handler = async (event: GetFollowsCountRequest): Promise<GetFollowCountResponse> => {
 	let response: GetFollowCountResponse;
-	console.log('get followees lambda', event);
 
 	let request: GetFollowsCountRequest = GetFollowsCountRequest.fromJson(event);
-	console.log('the request for followees', request);
 	try {
 		response = new GetFollowCountResponse(
 			true,

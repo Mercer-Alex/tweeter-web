@@ -4,9 +4,7 @@ import { StatusService } from "../model/service/StatusService";
 
 export const handler = async (event: LoadMoreStatusItemsRequest): Promise<LoadMoreItemsResponse> => {
 	let response: LoadMoreItemsResponse;
-	console.log('in the handler', event);
 	let request: LoadMoreStatusItemsRequest = LoadMoreStatusItemsRequest.fromJson(event);
-	console.log('after request', request);
 
 	try {
 		response = new LoadMoreItemsResponse(

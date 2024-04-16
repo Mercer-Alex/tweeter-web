@@ -18,9 +18,7 @@ let aliasList: string[] = Array.from({ length: numUsers }, (_, i) => followernam
 let followDaoFillTable = new FollowDaoFillTable();
 let userDaoFillTable = new UserDaoFillTable();
 
-console.log('setting followers');
 setFollowers(0);
-console.log('setting users');
 setUsers(0);
 userDaoFillTable.increaseFollowersCount(mainUsername, numUsers);
 

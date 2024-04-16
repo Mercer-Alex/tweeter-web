@@ -3,11 +3,7 @@ import { FollowService } from "../model/service/FollowService";
 
 export const handler = async (event: LoadMoreFollowsRequest): Promise<LoadMoreFollowsResponse> => {
 	let response: LoadMoreFollowsResponse;
-	console.log("in lambda", event);
 	let request: LoadMoreFollowsRequest = LoadMoreFollowsRequest.fromJson(event);
-
-	console.log('followers lambda', request);
-
 
 	try {
 		response = new LoadMoreFollowsResponse(

@@ -33,13 +33,11 @@ async function deleteItems(tableName: string, items: DynamoDB.DocumentClient.Ite
 		batchWriteParams.RequestItems[tableName].push(deleteRequest);
 		if (batchWriteParams.RequestItems[tableName].length === 25) {
 			await ddb.batchWrite(batchWriteParams).promise();
-			console.log(`Batch of items deleted.`);
 			batchWriteParams.RequestItems[tableName] = [];
 		}
 	}
 	if (batchWriteParams.RequestItems[tableName].length > 0) {
 		await ddb.batchWrite(batchWriteParams).promise();
-		console.log(`Final batch of items deleted.`);
 	}
 }
 async function removeAllEntries(tableName: string) {
@@ -47,7 +45,6 @@ async function removeAllEntries(tableName: string) {
 	if (items.length > 0) {
 		await deleteItems(tableName, items);
 	} else {
-		console.log("No items to delete.");
 	}
 }
 ["feed", "user", "follows"].forEach(table => removeAllEntries(table).catch((error) => console.error("Failed to remove entries:", error)));

@@ -26,16 +26,11 @@ export class StatusService extends DaoService {
 		}
 		else {
 			response = await this.feedDao.getPageofStatuses(user.alias, pageSize, lastItem);
-			console.log('feed response', response);
 		}
-		console.log('the response', response)
 
 		for (const futureStatus of response[0]) {
 			let userForStatus: User | null | undefined = await this.userDao.getUser(futureStatus.author_handle);
 			let statusToAdd = new Status(futureStatus.post, userForStatus!, futureStatus.time_stamp);
-
-			console.log('individual', futureStatus);
-			console.log(statusToAdd);
 
 			statusList.push(statusToAdd);
 		}
@@ -46,13 +41,10 @@ export class StatusService extends DaoService {
 	public async postStatus(newStatus: Status, authToken: AuthToken): Promise<void> {
 		await this.checkAuthToken(authToken);
 
-		console.log('the new status', newStatus)
-
 		await this.storyDao.putStatus(newStatus);
 	};
 
 	public async postFeed(newStatus: Status, userList: string[]): Promise<void> {
-		console.log('the new status', newStatus)
 
 		for (const username of userList) {
 			await this.feedDao.putStatus(newStatus, newStatus._user._alias, username);

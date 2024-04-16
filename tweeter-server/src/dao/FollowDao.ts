@@ -36,8 +36,6 @@ export default class FollowDao extends BaseDao implements FollowDaoInterface {
 		const data = await this.client.send(new QueryCommand(params));
 		const hasMorePages = data.LastEvaluatedKey !== undefined;
 
-		console.log('followees data', data.Items);
-
 		data.Items?.forEach((item) =>
 			items.push(item[this.follower_handleAttr])!
 		);
@@ -82,8 +80,6 @@ export default class FollowDao extends BaseDao implements FollowDaoInterface {
 
 		const items: string[] = [];
 		const data = await this.client.send(new QueryCommand(params));
-
-		console.log('followers aliases?', data.Items);
 
 		data.Items?.forEach((item) =>
 			items.push(item[this.follower_handleAttr])!

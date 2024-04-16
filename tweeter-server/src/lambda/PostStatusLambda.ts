@@ -7,7 +7,6 @@ export const handler = async (event: PostStatusRequest): Promise<TweeterResponse
 	let response: TweeterResponse;
 
 	let request: PostStatusRequest = PostStatusRequest.fromJson(event);
-	console.log("working status", request.newStatus);
 	try {
 		await new StatusService().postStatus(request.newStatus, request._authToken!);
 		response = new TweeterResponse(true);
@@ -26,7 +25,6 @@ export const handler = async (event: PostStatusRequest): Promise<TweeterResponse
 
 	try {
 		const data = await sqsClient.send(new SendMessageCommand(params));
-		console.log("Success, message sent. MessageID:", data.MessageId);
 	} catch (err) {
 		throw err;
 	}

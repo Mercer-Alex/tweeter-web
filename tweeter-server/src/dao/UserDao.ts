@@ -53,10 +53,7 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 			Key: { [this.usernameAttr]: username },
 		};
 
-		console.log('followers params', params)
-
 		const output = await this.client.send(new GetCommand(params));
-		console.log('followers output', output)
 		return output.Item?.followers;
 	}
 
@@ -66,10 +63,7 @@ export default class UserDao extends BaseDao implements UserDaoInterface {
 			Key: { [this.usernameAttr]: username },
 		};
 
-		console.log('followees params', params)
-
 		const output = await this.client.send(new GetCommand(params));
-		console.log('followees output', output)
 
 		return output.Item?.followees;
 	}

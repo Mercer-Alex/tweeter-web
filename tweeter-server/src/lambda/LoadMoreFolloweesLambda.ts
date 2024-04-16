@@ -6,9 +6,6 @@ export const handler = async (event: LoadMoreFollowsRequest): Promise<LoadMoreFo
 
 	let request: LoadMoreFollowsRequest = LoadMoreFollowsRequest.fromJson(event);
 
-	console.log('followees lambda', request);
-
-
 	try {
 		response = new LoadMoreFollowsResponse(
 			true,

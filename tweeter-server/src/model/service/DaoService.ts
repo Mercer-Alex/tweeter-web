@@ -64,9 +64,7 @@ export class DaoService {
 	}
 
 	public async checkAuthToken(authToken: AuthToken): Promise<[AuthToken, string]> {
-		console.log('checking token', authToken);
 		const response: [AuthToken, string] | [undefined, undefined] = await this.authTokenDao.checkAuthToken(authToken);
-		console.log('response from token check', response);
 		if (response[0] == undefined || response[1] == undefined) {
 			throw new Error('Invalid auth token');
 		}

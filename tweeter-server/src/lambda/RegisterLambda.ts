@@ -4,10 +4,7 @@ import { UserService } from "../model/service/UserService";
 export const handler = async (event: RegisterRequest): Promise<AuthenticateResponse> => {
 	let response: AuthenticateResponse;
 
-	console.log('before request', event);
-
 	let request: RegisterRequest = RegisterRequest.fromJson(event);
-	console.log('after event', request);
 
 	try {
 		response = new AuthenticateResponse(
