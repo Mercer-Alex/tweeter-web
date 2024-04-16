@@ -114,4 +114,8 @@ export class FollowService extends DaoService {
 
 		return [followersCount, followeesCount];
 	};
+
+	public async getFollowers(username: string): Promise<string[]> {
+		return await this.followDao.getFollowers(username);
+	}
 }

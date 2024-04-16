@@ -43,18 +43,19 @@ export class StatusService extends DaoService {
 		return [statusList, response[1]]
 	};
 
-
 	public async postStatus(newStatus: Status, authToken: AuthToken): Promise<void> {
 		await this.checkAuthToken(authToken);
 
 		console.log('the new status', newStatus)
 
 		await this.storyDao.putStatus(newStatus);
+	};
 
-		const authorFollowers: string[] = await this.followDao.getFollowers(newStatus.user._alias);
+	public async postFeed(newStatus: Status, userList: string[]): Promise<void> {
+		console.log('the new status', newStatus)
 
-		for (const follower of authorFollowers) {
-			await this.feedDao.putStatus(newStatus, newStatus.user._alias, follower);
+		for (const username of userList) {
+			await this.feedDao.putStatus(newStatus, newStatus._user._alias, username);
 		}
 	};
 }

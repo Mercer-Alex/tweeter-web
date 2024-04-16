@@ -90,7 +90,6 @@ export default class FollowDao extends BaseDao implements FollowDaoInterface {
 		);
 
 		return items;
-
 	}
 
 	async putFollow(follows: Follow): Promise<void> {
